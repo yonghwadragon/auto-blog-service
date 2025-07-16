@@ -1,3 +1,6 @@
+// auto-blog-service/src/components/form/DatePicker.tsx
+// DatePicker 컴포넌트: 날짜와 시간을 선택할 수 있는 UI를 제공합니다.
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
