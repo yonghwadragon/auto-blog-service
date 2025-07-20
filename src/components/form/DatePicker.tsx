@@ -6,8 +6,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 interface DatePickerProps {
-  value?: string; // ISO 문자열 또는 YYYY-MM-DD 형식
-  onChange?: (value: string) => void;
+  value?: string | Date; // ISO 문자열, YYYY-MM-DD 형식, 또는 Date 객체
+  onChange?: (value: string | Date) => void; // string 또는 Date 객체 반환
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
@@ -15,10 +15,11 @@ interface DatePickerProps {
   error?: string;
   helperText?: string;
   className?: string;
-  minDate?: string;
-  maxDate?: string;
+  minDate?: string | Date;
+  maxDate?: string | Date;
   showTime?: boolean;
   format?: 'date' | 'datetime' | 'time';
+  returnType?: 'string' | 'date'; // 반환 타입 지정
 }
 
 interface CalendarDay {
@@ -44,18 +45,35 @@ const DatePicker: React.FC<DatePickerProps> = ({
   maxDate,
   showTime = false,
   format = 'date',
+  returnType = 'string', // 기본값은 string 반환
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(
-    value ? new Date(value) : null
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
+    if (!value) return null;
+    return value instanceof Date ? value : new Date(value);
+  });
   const [timeValue, setTimeValue] = useState({
     hours: selectedDate?.getHours() || 0,
     minutes: selectedDate?.getMinutes() || 0,
   });
 
   const datePickerRef = useRef<HTMLDivElement>(null);
+
+  // value prop이 변경될 때 selectedDate 업데이트
+  useEffect(() => {
+    if (!value) {
+      setSelectedDate(null);
+      return;
+    }
+
+    const newDate = value instanceof Date ? value : new Date(value);
+    setSelectedDate(newDate);
+    setTimeValue({
+      hours: newDate.getHours(),
+      minutes: newDate.getMinutes(),
+    });
+  }, [value]);
 
   // 외부 클릭 감지
   useEffect(() => {
@@ -69,8 +87,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 날짜 포맷팅
-  const formatDate = (date: Date | null, includeTime: boolean = false) => {
+  // Date를 안전하게 변환하는 헬퍼 함수
+  const toDate = (dateInput: string | Date | undefined | null): Date | null => {
+    if (!dateInput) return null;
+    return dateInput instanceof Date ? dateInput : new Date(dateInput);
+  };
+
+  // 날짜 포맷팅 (문자열 반환)
+  const formatDate = (date: Date | null, includeTime: boolean = false): string => {
     if (!date) return '';
     
     const year = date.getFullYear();
@@ -88,8 +112,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return formatted;
   };
 
-  // 표시용 날짜 포맷팅
-  const formatDisplayDate = (date: Date | null) => {
+  // 표시용 날짜 포맷팅 (한국어)
+  const formatDisplayDate = (date: Date | null): string => {
     if (!date) return '';
     
     const year = date.getFullYear();
@@ -105,6 +129,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
     }
     
     return formatted;
+  };
+
+  // onChange 이벤트 발생
+  const handleDateChange = (newDate: Date) => {
+    if (!onChange) return;
+
+    if (returnType === 'date') {
+      onChange(newDate);
+    } else {
+      onChange(formatDate(newDate, showTime));
+    }
   };
 
   // 월 이동
@@ -132,7 +167,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       setIsOpen(false);
     }
     
-    onChange?.(formatDate(newDate, showTime));
+    handleDateChange(newDate);
   };
 
   // 시간 변경
@@ -145,8 +180,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
       if (type === 'minutes') newDate.setMinutes(value);
       
       setSelectedDate(newDate);
-      onChange?.(formatDate(newDate, true));
+      handleDateChange(newDate);
     }
+  };
+
+  // 날짜 비교를 위한 헬퍼 함수
+  const isDateDisabled = (date: Date): boolean => {
+    const minDateObj = toDate(minDate);
+    const maxDateObj = toDate(maxDate);
+    
+    if (minDateObj && date < minDateObj) return true;
+    if (maxDateObj && date > maxDateObj) return true;
+    
+    return false;
   };
 
   // 현재 월의 날짜들 생성
@@ -168,9 +214,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       const isCurrentMonth = day.getMonth() === currentMonth;
       const isToday = day.toDateString() === new Date().toDateString();
       const isSelected = !!(selectedDate && day.toDateString() === selectedDate.toDateString());
-      const isDisabled = 
-        !!((minDate && day < new Date(minDate)) ||
-        (maxDate && day > new Date(maxDate)));
+      const isDisabled = isDateDisabled(day);
 
       days.push({
         date: day,

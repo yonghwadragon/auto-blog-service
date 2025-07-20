@@ -16,7 +16,7 @@ interface GenerateContentRequest {
   category?: string;
   keywords?: string[];
   images?: string[]; // base64 encoded images
-  tone?: 'formal' | 'casual' | 'professional' | 'friendly';
+  tone?: 'formal' | 'casual' | 'professional' | 'friendly' | 'humorous';
   length?: 'short' | 'medium' | 'long';
   includeImages?: boolean;
 }
@@ -157,7 +157,8 @@ class GeminiService {
       formal: '정중하고 공식적인',
       casual: '친근하고 캐주얼한',
       professional: '전문적이고 신뢰할 수 있는',
-      friendly: '친근하고 따뜻한'
+      friendly: '친근하고 따뜻한',
+      humorous: '유머러스하고 재치있는'
     };
 
     let prompt = `블로그 포스트를 작성해주세요.
@@ -168,7 +169,7 @@ ${category ? `카테고리: ${category}` : ''}
 ${keywords && keywords.length > 0 ? `키워드: ${keywords.join(', ')}` : ''}
 
 작성 가이드라인:
-- 톤: ${toneMap[tone]} 어조
+- 톤: ${toneMap[tone] ?? '기본'} 어조
 - 길이: ${lengthMap[length]} 분량
 - 구조: 서론, 본론, 결론으로 구성
 - 독자 친화적이고 읽기 쉬운 내용

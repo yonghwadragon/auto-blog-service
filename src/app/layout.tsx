@@ -1,3 +1,6 @@
+// auto-blog-service/src/app/layout.tsx
+// 루트 레이아웃: 애플리케이션의 전역 레이아웃 및 메타데이터를 정의합니다.
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
