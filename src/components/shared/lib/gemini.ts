@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/lib/gemini.ts
+// auto-blog-service\src\components\shared\lib\gemini.ts
 // Gemini API 유틸리티: Gemini 모델과 상호작용하기 위한 함수들을 정의합니다.
 
 // Gemini API 연동 서비스

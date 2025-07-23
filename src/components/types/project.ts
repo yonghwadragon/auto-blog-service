@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/types/project.ts
+// auto-blog-service\src\components\types\project.ts
 // 프로젝트 관련 타입 정의: 프로젝트 데이터 구조 및 관련 인터페이스를 정의합니다.
 
 // 프로젝트 관련 타입 정의

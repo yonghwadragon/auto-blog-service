@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/Toggle.tsx
+// auto-blog-service\src\components\domain\settings\Toggle.tsx
 // Toggle 컴포넌트: ON/OFF 상태를 전환하는 토글 스위치를 렌더링합니다.
 
 'use client';

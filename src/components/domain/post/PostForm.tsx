@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/domain/post/PostForm.tsx
+// auto-blog-service\src\components\domain\post\PostForm.tsx
 // PostForm 컴포넌트: 게시글 생성 및 편집에 사용되는 폼을 렌더링합니다.
 
 import React from "react";

@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\layout\Footer.tsx
+// auto-blog-service\src\components\shared\layout\Footer.tsx
 // Footer 컴포넌트: 애플리케이션의 하단 푸터 영역을 렌더링합니다.
 
 'use client';

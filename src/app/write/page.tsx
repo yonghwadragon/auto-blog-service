@@ -1,4 +1,4 @@
-//auto-blog-service\src\app\write\page.tsx
+// auto-blog-service\src\app\write\page.tsx
 
 export default function WritePage() {
   return (

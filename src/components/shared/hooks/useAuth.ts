@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/hooks/useAuth.ts
+// auto-blog-service\src\components\shared\hooks\useAuth.ts
 // useAuth 훅: 사용자 인증 상태 및 관련 기능을 관리하는 커스텀 훅입니다.
 
 'use client';

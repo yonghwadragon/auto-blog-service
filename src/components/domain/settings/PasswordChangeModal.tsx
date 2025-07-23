@@ -1,8 +1,8 @@
-// auto-blog-service/src/components/domain/settings/PasswordChangeModal.tsx
+// auto-blog-service\src\components\domain\settings\PasswordChangeModal.tsx
 // PasswordChangeModal 컴포넌트: 사용자 비밀번호 변경 기능을 제공하는 모달 대화 상자를 렌더링합니다.
 
 import React from "react";
-import ConfirmModal from "@/components/shared/modal/ConfirmModal";
+import ConfirmModal from "@/components/modal/ConfirmModal";
 
 const PasswordChangeModal: React.FC = () => {
   return (

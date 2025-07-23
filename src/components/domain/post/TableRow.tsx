@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/table/TableRow.tsx
+// auto-blog-service\src\components\domain\post\TableRow.tsx
 // TableRow 컴포넌트: 테이블 내의 개별 행을 렌더링합니다.
 
 'use client';

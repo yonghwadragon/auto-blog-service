@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\layout\Navbar.tsx
+// auto-blog-service\src\components\shared\layout\Navbar.tsx
 // Navbar 컴포넌트: 상단 네비게이션 바 구현
 
 'use client';

@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\lib\naverBlog.ts
+// auto-blog-service\src\components\shared\lib\naverBlog.ts
 // NaverBlog API 유틸리티: 네이버 블로그 API와 통신하기 위한 함수들을 정의합니다.
 
 import { Post } from '../../types/post';

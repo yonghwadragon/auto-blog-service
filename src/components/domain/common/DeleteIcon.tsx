@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/icons/DeleteIcon.tsx
+// auto-blog-service\src\components\domain\common\DeleteIcon.tsx
 // DeleteIcon 컴포넌트: 삭제 기능을 나타내는 아이콘을 렌더링합니다.
 
 import React from 'react';

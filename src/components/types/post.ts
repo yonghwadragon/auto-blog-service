@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/types/post.ts
+// auto-blog-service\src\components\types\post.ts
 // 게시글 관련 타입 정의: 게시글 데이터 구조 및 관련 인터페이스를 정의합니다.
 
 // 포스트 관련 타입 정의

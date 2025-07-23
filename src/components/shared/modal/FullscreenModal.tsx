@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/modal/FullscreenModal.tsx
+// auto-blog-service\src\components\shared\modal\FullscreenModal.tsx
 // FullscreenModal 컴포넌트: 전체 화면으로 내용을 표시하는 모달 대화 상자를 렌더링합니다.
 
 'use client';

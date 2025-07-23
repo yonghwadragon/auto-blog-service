@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/ImageUploader.tsx
+// auto-blog-service\src\components\domain\write\ImageUploader.tsx
 // ImageUploader 컴포넌트: 이미지 파일을 업로드하고 미리보기를 제공하는 UI를 렌더링합니다.
 
 import React, { useState, useRef, useCallback } from 'react';

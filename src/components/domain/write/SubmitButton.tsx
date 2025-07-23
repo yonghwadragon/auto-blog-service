@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/domain/write/SubmitButton.tsx
+// auto-blog-service\src\components\domain\write\SubmitButton.tsx
 // SubmitButton 컴포넌트: 글쓰기 폼 제출 버튼을 렌더링합니다.
 
 import React from "react";

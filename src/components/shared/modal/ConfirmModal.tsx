@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/modal/ConfirmModal.tsx
+// auto-blog-service\src\components\shared\modal\ConfirmModal.tsx
 // ConfirmModal 컴포넌트: 사용자에게 확인/취소 선택을 요구하는 모달 대화 상자를 렌더링합니다.
 
 'use client';

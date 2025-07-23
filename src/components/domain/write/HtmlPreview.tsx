@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/HtmlPreview.tsx
+// auto-blog-service\src\components\domain\write\HtmlPreview.tsx
 // HtmlPreview 컴포넌트: HTML 콘텐츠를 안전하게 미리보기로 렌더링합니다.
 
 import React, { useState, useEffect } from 'react';

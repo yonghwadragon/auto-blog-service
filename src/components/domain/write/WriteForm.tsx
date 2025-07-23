@@ -1,9 +1,9 @@
-// auto-blog-service/src/components/domain/write/WriteForm.tsx
+// auto-blog-service\src\components\domain\write\WriteForm.tsx
 // WriteForm 컴포넌트: 블로그 글 작성에 필요한 입력 필드와 기능을 포함하는 폼을 렌더링합니다.
 
 import React from "react";
-import HtmlPreview from "@/components/shared/ui/HtmlPreview";
-import Textarea from "@/components/shared/ui/Textarea";
+import HtmlPreview from "@/components/form/HtmlPreview";
+import Textarea from "@/components/form/Textarea";
 
 const WriteForm: React.FC = () => {
   return (

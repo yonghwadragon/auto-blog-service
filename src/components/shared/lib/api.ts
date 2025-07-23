@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/lib/api.ts
+// auto-blog-service\src\components\shared\lib\api.ts
 // API 유틸리티: 백엔드 API와 통신하기 위한 함수들을 정의합니다.
 
 // API 통신 서비스

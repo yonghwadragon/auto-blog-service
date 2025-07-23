@@ -1,4 +1,4 @@
-//auto-blog-service\src\components\form\Input.tsx
+// auto-blog-service\src\components\shared\ui\Input.tsx
 // Input 컴포넌트: 다양한 타입과 기능을 가진 입력 필드를 렌더링합니다.
 
 'use client';

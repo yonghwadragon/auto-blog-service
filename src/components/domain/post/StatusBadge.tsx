@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/table/StatusBadge.tsx
+// auto-blog-service\src\components\domain\post\StatusBadge.tsx
 // StatusBadge 컴포넌트: 다양한 상태를 시각적으로 표시하는 배지를 렌더링합니다.
 
 'use client';

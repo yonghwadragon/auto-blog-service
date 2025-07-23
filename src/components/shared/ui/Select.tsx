@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/Select.tsx                                            │        
+// auto-blog-service\src\components\shared\ui\Select.tsx                                           │        
 // Select 컴포넌트: 드롭다운 선택 상자를 렌더링합니다.
 
 'use client';

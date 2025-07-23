@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\feedback\ToastContainer.tsx
+// auto-blog-service\src\components\shared\feedback\ToastContainer.tsx
 // ToastContainer 컴포넌트: Toast 메시지들을 관리하고 표시하는 컨테이너를 렌더링합니다.
 
 'use client';

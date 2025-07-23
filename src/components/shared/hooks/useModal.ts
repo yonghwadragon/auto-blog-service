@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/hooks/useModal.ts
+// auto-blog-service\src\components\shared\hooks\useModal.ts
 // useModal 훅: 모달의 열림/닫힘 상태 및 관련 기능을 관리하는 커스텀 훅입니다.
 
 'use client';

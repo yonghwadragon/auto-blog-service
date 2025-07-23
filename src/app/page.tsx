@@ -1,4 +1,4 @@
-//auto-blog-service\src\app\page.tsx
+// auto-blog-service\src\app\page.tsx
 // 메인 페이지: AI 블로그 자동 작성 서비스의 사용자 인터페이스를 렌더링합니다.
 
 'use client';
@@ -16,7 +16,7 @@ import LoadingSpinner from '@/components/shared/feedback/LoadingSpinner';
 import FullscreenModal from '@/components/shared/modal/FullscreenModal';
 import { useToast } from '@/components/shared/hooks/useToast';
 import { useModal } from '@/components/shared/hooks/useModal';
-import { generateBlogContent } from '@/components/lib/gemini';
+import { generateBlogContent } from '@/components/shared/lib/gemini';
 
 // 로컬 타입 정의 - 정확한 리터럴 유니온 타입 사용
 interface BlogFormData {

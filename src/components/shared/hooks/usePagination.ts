@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/hooks/usePagination.ts
+// auto-blog-service\src\components\shared\hooks\usePagination.ts
 // usePagination 훅: 페이지네이션 로직 및 상태를 관리하는 커스텀 훅입니다.
 
 'use client';

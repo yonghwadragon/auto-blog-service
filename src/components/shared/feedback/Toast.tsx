@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/feedback/Toast.tsx
+// auto-blog-service\src\components\shared\feedback\Toast.tsx
 // Toast 컴포넌트: 사용자에게 짧은 메시지를 표시하는 알림 토스트를 렌더링합니다.
 
 import React, { useEffect, useState } from 'react';

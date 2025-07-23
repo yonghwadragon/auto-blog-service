@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/table/Pagination.tsx
+// auto-blog-service\src\components\domain\post\Pagination.tsx
 // Pagination 컴포넌트: 데이터 목록의 페이지네이션 컨트롤을 렌더링합니다.
 
 'use client';

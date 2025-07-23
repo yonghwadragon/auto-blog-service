@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\layout\NavItem.tsx
+// auto-blog-service\src\components\shared\layout\NavItem.tsx
 // NavItem 컴포넌트: 네비게이션 바의 개별 항목을 렌더링합니다.
 
 'use client';

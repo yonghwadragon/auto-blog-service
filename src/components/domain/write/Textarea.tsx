@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/Textarea.tsx
+// auto-blog-service\src\components\domain\write\Textarea.tsx
 // Textarea 컴포넌트: 다양한 기능을 가진 텍스트 영역 입력 필드를 렌더링합니다.
 
 'use client';

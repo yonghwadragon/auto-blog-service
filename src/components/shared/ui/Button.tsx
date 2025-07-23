@@ -1,4 +1,4 @@
-//auto-blog-service\src\components\form\Button.tsx
+// auto-blog-service\src\components\shared\ui\Button.tsx
 // Button 컴포넌트: 재사용 가능한 UI 버튼을 렌더링합니다.
 
 'use client';

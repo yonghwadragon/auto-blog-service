@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/icons/LogoIcon.tsx
+// auto-blog-service\src\components\domain\common\LogoIcon.tsx
 // LogoIcon 컴포넌트: 애플리케이션의 로고 아이콘을 렌더링합니다.
 
 import React from 'react';

@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/table/Table.tsx
+// auto-blog-service\src\components\domain\post\Table.tsx
 // Table 컴포넌트: 데이터를 표 형식으로 표시하는 재사용 가능한 테이블을 렌더링합니다.
 
 'use client';

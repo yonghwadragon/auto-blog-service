@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/types/form.ts
+// auto-blog-service\src\components\types\form.ts
 // 폼 관련 타입 정의: 폼 컴포넌트에서 사용되는 인터페이스 및 타입을 정의합니다.
 
 // 폼 관련 타입 정의

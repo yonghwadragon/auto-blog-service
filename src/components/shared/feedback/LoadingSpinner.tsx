@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/feedback/LoadingSpinner.tsx
+// auto-blog-service\src\components\shared\feedback\LoadingSpinner.tsx
 // LoadingSpinner 컴포넌트: 로딩 상태를 시각적으로 표시하는 스피너를 렌더링합니다.
 
 import React from 'react';

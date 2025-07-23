@@ -1,4 +1,4 @@
-//auto-blog-service\src\app\posts\page.tsx
+// auto-blog-service\src\app\posts\page.tsx
 
 export default function PostsPage() {
   return (

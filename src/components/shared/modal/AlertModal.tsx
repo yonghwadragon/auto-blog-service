@@ -1,4 +1,4 @@
-// auto-blog-service\src\components\modal\AlertModal.tsx
+// auto-blog-service\src\components\shared\modal\AlertModal.tsx
 // AlertModal 컴포넌트: 사용자에게 정보를 알리는 모달 대화 상자를 렌더링합니다.
 
 'use client';

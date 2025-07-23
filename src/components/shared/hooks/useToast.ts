@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/hooks/useToast.ts
+// auto-blog-service\src\components\shared\hooks\useToast.ts
 // useToast 훅: 토스트 알림 메시지를 표시하고 관리하는 커스텀 훅입니다.
 
 'use client';

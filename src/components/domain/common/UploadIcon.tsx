@@ -1,4 +1,4 @@
-//auto-blog-service\src\components\icons\UploadIcon.tsx
+// auto-blog-service\src\components\domain\common\UploadIcon.tsx
 // UploadIcon 컴포넌트: 파일 업로드 기능을 나타내는 아이콘을 렌더링합니다.
 
 import React from 'react';

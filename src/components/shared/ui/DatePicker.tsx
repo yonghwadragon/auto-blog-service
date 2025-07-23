@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/form/DatePicker.tsx
+// auto-blog-service\src\components\shared\ui\DatePicker.tsx
 // DatePicker 컴포넌트: 날짜와 시간을 선택할 수 있는 UI를 제공합니다.
 
 'use client';

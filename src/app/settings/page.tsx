@@ -1,4 +1,4 @@
-//auto-blog-service\src\app\settings\page.tsx
+// auto-blog-service\src\app\settings\page.tsx
 
 export default function SettingsPage() {
   return (

@@ -1,4 +1,4 @@
-// auto-blog-service/src/components/types/user.ts
+// auto-blog-service\src\components\types\user.ts
 // 사용자 관련 타입 정의: 사용자 데이터 구조 및 관련 인터페이스를 정의합니다.
 
 // 사용자 관련 타입 정의
