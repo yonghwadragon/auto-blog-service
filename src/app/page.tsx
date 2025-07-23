@@ -4,18 +4,18 @@
 'use client';
 
 import { useState } from 'react';
-import Input from '@/components/form/Input';
-import Textarea from '@/components/form/Textarea';
-import Select from '@/components/form/Select';
-import Toggle from '@/components/form/Toggle';
-import DatePicker from '@/components/form/DatePicker';
-import ImageUploader from '@/components/form/ImageUploader';
-import Button from '@/components/form/Button';
-import HtmlPreview from '@/components/form/HtmlPreview';
-import LoadingSpinner from '@/components/feedback/LoadingSpinner';
-import FullscreenModal from '@/components/modal/FullscreenModal';
-import { useToast } from '@/components/hooks/useToast';
-import { useModal } from '@/components/hooks/useModal';
+import Input from '@/components/shared/ui/Input';
+import Textarea from '@/components/domain/write/Textarea';
+import Select from '@/components/shared/ui/Select';
+import Toggle from '@/components/domain/settings/Toggle';
+import DatePicker from '@/components/shared/ui/DatePicker';
+import ImageUploader from '@/components/domain/write/ImageUploader';
+import Button from '@/components/shared/ui/Button';
+import HtmlPreview from '@/components/domain/write/HtmlPreview';
+import LoadingSpinner from '@/components/shared/feedback/LoadingSpinner';
+import FullscreenModal from '@/components/shared/modal/FullscreenModal';
+import { useToast } from '@/components/shared/hooks/useToast';
+import { useModal } from '@/components/shared/hooks/useModal';
 import { generateBlogContent } from '@/components/lib/gemini';
 
 // 로컬 타입 정의 - 정확한 리터럴 유니온 타입 사용

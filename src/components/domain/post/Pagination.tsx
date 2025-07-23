@@ -4,7 +4,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import Button from '../form/Button';
+import Button from '../../shared/ui/Button';
 
 interface PaginationProps {
   currentPage: number;

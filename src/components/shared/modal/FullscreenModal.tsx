@@ -4,7 +4,7 @@
 'use client';
 
 import { useEffect, ReactNode } from 'react';
-import Button from '../form/Button';
+import Button from '../ui/Button';
 
 interface FullscreenModalProps {
   isOpen: boolean;
