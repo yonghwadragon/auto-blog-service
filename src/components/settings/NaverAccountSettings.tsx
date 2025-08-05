@@ -180,7 +180,8 @@ export default function NaverAccountSettings() {
                     placeholder="예: 메인 계정"
                     value={formData.alias}
                     onChange={(e) => setFormData(prev => ({ ...prev, alias: e.target.value }))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
+                    style={{ WebkitAppearance: 'none', fontSize: '16px' }}
                   />
                 </div>
 
@@ -193,9 +194,13 @@ export default function NaverAccountSettings() {
                     placeholder="네이버 아이디"
                     value={formData.naverId}
                     onChange={(e) => setFormData(prev => ({ ...prev, naverId: e.target.value }))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
                     autoCapitalize="none"
                     autoCorrect="off"
+                    autoComplete="off"
+                    spellCheck="false"
+                    inputMode="text"
+                    style={{ WebkitAppearance: 'none', fontSize: '16px' }}
                   />
                 </div>
 
@@ -208,7 +213,9 @@ export default function NaverAccountSettings() {
                     placeholder="비밀번호"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
+                    autoComplete="off"
+                    style={{ WebkitAppearance: 'none', fontSize: '16px' }}
                   />
                 </div>
 
@@ -221,7 +228,13 @@ export default function NaverAccountSettings() {
                     placeholder="https://blog.naver.com/your-id"
                     value={formData.blogUrl}
                     onChange={(e) => setFormData(prev => ({ ...prev, blogUrl: e.target.value }))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    autoComplete="off"
+                    spellCheck="false"
+                    inputMode="url"
+                    style={{ WebkitAppearance: 'none', fontSize: '16px' }}
                   />
                 </div>
               </div>
