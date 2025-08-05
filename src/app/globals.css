@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== 전역 색상 변수 ===== */
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -17,6 +18,7 @@
   }
 }
 
+/* ===== 전역 body 스타일 ===== */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -25,7 +27,31 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  /* -webkit-font-smoothing: antialiased; */   /* 폰트 렌더링 부드럽게 */
+  min-height: 100vh; /* 항상 최소 화면 채우기 */
 }
 
+/* ===== Tailwind 베이스 확장(초기화/커스텀) ===== */
 @layer base {
+  /* 링크(앵커) 기본값: 밑줄 제거, 색상 상속 */
+  a {
+    @apply text-inherit no-underline hover:underline;
+    transition: color 0.2s;
+  }
+
+  /* input, button 등 폰트 상속 */
+  input, button, textarea, select {
+    font: inherit;
+  }
+
+  /* 전체 box-sizing: border-box */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  /* selection(드래그 영역) 스타일 */
+  ::selection {
+    background: #d1fae5;  /* 연한 녹색 */
+    color: #1a202c;
+  }
 }
