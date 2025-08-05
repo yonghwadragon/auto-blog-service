@@ -1,55 +1,80 @@
 // src/components/dashboard/QuickActions.tsx
-// 대시보드 빠른 작업 버튼 영역
+// 생동감 있는 빠른 작업 메뉴
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { PenTool, FileText, Settings, Plus, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { PenTool, FileText, Settings } from 'lucide-react'
 
 const actions = [
   {
     title: '새 글 쓰기',
-    description: '사진 업로드 후 AI 글 작성',
+    description: '사진으로 맛집 리뷰 작성',
     href: '/write',
-    icon: PenTool,
+    icon: Plus,
+    gradient: 'from-green-500 to-emerald-500',
+    bgGradient: 'from-green-50 to-emerald-50',
+    primary: true,
   },
   {
-    title: '작성한 글 보기',
-    description: '작성한 글 전체 확인',
+    title: '글 관리',
+    description: '작성한 글 확인',
     href: '/posts',
     icon: FileText,
+    gradient: 'from-blue-500 to-cyan-500',
+    bgGradient: 'from-blue-50 to-cyan-50',
+    primary: false,
   },
   {
     title: '설정',
-    description: '네이버 계정 및 Gemini API',
+    description: '계정 및 API 설정',
     href: '/settings',
     icon: Settings,
+    gradient: 'from-emerald-600 to-emerald-500',
+    bgGradient: 'from-emerald-50 to-emerald-100',
+    primary: false,
   },
 ]
 
 export default function QuickActions() {
   return (
-    <Card className="mb-8 shadow-none border-0 bg-transparent">
-    <CardHeader className="bg-transparent px-0 pb-2">
-        <CardTitle className="text-xl font-bold text-gray-900">빠른 작업</CardTitle>
-    </CardHeader>
-    <CardContent className="px-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-        {actions.map((action) => (
-            <Link key={action.href} href={action.href}>
-            <div className="bg-white rounded-2xl shadow group transition ring-1 ring-green-100 hover:ring-green-400 hover:shadow-lg cursor-pointer flex flex-col items-center p-7 h-full border border-green-100">
-                <div className="mb-3 flex items-center justify-center w-14 h-14 rounded-full bg-green-500 group-hover:bg-green-600 transition">
-                <action.icon className="w-7 h-7 text-white" />
+    <div className="bg-white rounded-2xl shadow-lg border border-green-100 overflow-hidden">
+      <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-green-100">
+        <h3 className="text-lg font-bold text-slate-900 flex items-center">
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+          빠른 작업
+        </h3>
+      </div>
+      <div className="p-6 space-y-4">
+        {actions.map((action, index) => (
+          <Link key={action.href} href={action.href} className="block group">
+            <div 
+              className={`relative p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg border border-green-100 bg-gradient-to-r ${action.bgGradient} hover:shadow-${action.primary ? 'green' : 'blue'}-200/50`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {/* 호버 시 배경 효과 */}
+              <div className="absolute inset-0 bg-white/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <div className="relative flex items-center">
+                <div className={`p-3 rounded-lg bg-gradient-to-r ${action.gradient} shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                  <action.icon className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-center flex flex-col flex-1">
-                <div className="font-bold text-lg text-gray-900 mb-0.5">{action.title}</div>
-                <div className="text-[15px] text-gray-500">{action.description}</div>
+                <div className="flex-1 ml-4">
+                  <div className="text-base font-semibold text-slate-900 group-hover:text-slate-800">
+                    {action.title}
+                  </div>
+                  <div className="text-sm text-slate-600 mt-0.5">
+                    {action.description}
+                  </div>
                 </div>
+                <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-1 transition-all duration-300" />
+              </div>
             </div>
-            </Link>
+          </Link>
         ))}
-        </div>
-    </CardContent>
-    </Card>
+      </div>
+      
+      {/* 하단 장식 */}
+      <div className="h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500"></div>
+    </div>
   )
 }
