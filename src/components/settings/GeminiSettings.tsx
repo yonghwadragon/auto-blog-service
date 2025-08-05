@@ -5,16 +5,19 @@
 
 import { useState } from 'react'
 import { useSettingsStore } from '@/store/settingsStore'
-import { Settings, Eye, EyeOff } from 'lucide-react'
+import { Settings, Eye, EyeOff, CheckCircle } from 'lucide-react'
 
 export default function GeminiSettings() {
   const { geminiApiKey, setGeminiApiKey } = useSettingsStore()
   const [showKey, setShowKey] = useState(false) // 👀 키 표시 토글 상태
+  const [showSuccess, setShowSuccess] = useState(false) // 성공 메시지 표시 상태
 
   /** API 키 저장 */
   const handleSaveApiKey = () => {
     if (geminiApiKey.trim()) {
-      alert('API 키가 저장되었습니다!')
+      setShowSuccess(true)
+      // 3초 후 성공 메시지 숨기기
+      setTimeout(() => setShowSuccess(false), 3000)
     } else {
       alert('API 키를 입력해주세요.')
     }
@@ -41,6 +44,14 @@ export default function GeminiSettings() {
           <li>아래 입력창에 붙여넣기</li>
         </ol>
       </div>
+
+      {/* 성공 메시지 - 라벨 위쪽 */}
+      {showSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 flex items-center gap-2">
+          <CheckCircle className="w-5 h-5 text-green-600" />
+          <span className="text-green-800 font-medium">API 키가 성공적으로 저장되었습니다.</span>
+        </div>
+      )}
 
       {/* 입력 영역 */}
       <div className="space-y-4">
@@ -76,6 +87,16 @@ export default function GeminiSettings() {
         >
           API 키 저장
         </button>
+
+        {/* 성공 메시지 - 버튼 아래쪽 */}
+        {showSuccess && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <span className="text-green-800">
+              API 키가 설정되어 있습니다. 이제 AI 콘텐츠 생성 기능을 사용할 수 있습니다.
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )
