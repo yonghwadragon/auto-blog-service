@@ -10,12 +10,16 @@ import { Settings, Eye, EyeOff, CheckCircle } from 'lucide-react'
 export default function GeminiSettings() {
   const { geminiApiKey, setGeminiApiKey } = useSettingsStore()
   const [showKey, setShowKey] = useState(false) // 👀 키 표시 토글 상태
-  const [showSuccess, setShowSuccess] = useState(false) // 성공 메시지 표시 상태
+  const [showTempSuccess, setShowTempSuccess] = useState(false) // 3초 후 사라지는 메시지
+  const [showPermanentSuccess, setShowPermanentSuccess] = useState(false) // 계속 표시되는 메시지
 
   /** API 키 저장 */
   const handleSaveApiKey = () => {
     if (geminiApiKey.trim()) {
-      setShowSuccess(true)
+      setShowTempSuccess(true)
+      setShowPermanentSuccess(true)
+      // 3초 후 임시 메시지만 숨기기
+      setTimeout(() => setShowTempSuccess(false), 3000)
     } else {
       alert('API 키를 입력해주세요.')
     }
@@ -43,8 +47,8 @@ export default function GeminiSettings() {
         </ol>
       </div>
 
-      {/* 성공 메시지 - 라벨 위쪽 */}
-      {showSuccess && (
+      {/* 성공 메시지 - 라벨 위쪽 (3초 후 사라짐) */}
+      {showTempSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 flex items-center gap-2">
           <CheckCircle className="w-5 h-5 text-green-600" />
           <span className="text-green-800 font-medium">API 키가 성공적으로 저장되었습니다.</span>
@@ -86,8 +90,8 @@ export default function GeminiSettings() {
           API 키 저장
         </button>
 
-        {/* 성공 메시지 - 버튼 아래쪽 */}
-        {showSuccess && (
+        {/* 성공 메시지 - 버튼 아래쪽 (계속 표시) */}
+        {showPermanentSuccess && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
             <span className="text-green-800">
