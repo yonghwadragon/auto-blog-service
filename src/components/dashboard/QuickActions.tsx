@@ -14,7 +14,7 @@ interface QuickActionCardProps {
 
 const QuickActionCard = ({ title, description, icon: Icon, onClick, color }: QuickActionCardProps) => (
   <div 
-    className="bg-white rounded-lg p-6 shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
+    className="bg-white rounded-lg p-6 shadow-sm border cursor-pointer hover:shadow-md hover:bg-gray-300 transition-all duration-200"
     onClick={onClick}
   >
     <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
