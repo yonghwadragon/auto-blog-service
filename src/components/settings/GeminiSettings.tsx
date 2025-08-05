@@ -22,6 +22,7 @@ export default function GeminiSettings() {
       setTimeout(() => setShowTempSuccess(false), 3000)
     } else {
       alert('API 키를 입력해주세요.')
+      setShowPermanentSuccess(false)
     }
   }
 
@@ -67,12 +68,18 @@ export default function GeminiSettings() {
               placeholder="AIzaSy..."
               value={geminiApiKey}
               onChange={(e) => setGeminiApiKey(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck="false"
+              inputMode="text"
+              style={{ WebkitAppearance: 'none', fontSize: '16px' }}
             />
             <button
               type="button"
               onClick={() => setShowKey((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded touch-manipulation"
             >
               {showKey ? (
                 <EyeOff className="w-5 h-5" />
@@ -85,7 +92,7 @@ export default function GeminiSettings() {
 
         <button
           onClick={handleSaveApiKey}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-base font-medium touch-manipulation w-full sm:w-auto"
         >
           API 키 저장
         </button>
