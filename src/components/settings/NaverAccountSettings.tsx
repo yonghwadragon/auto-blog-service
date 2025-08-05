@@ -6,11 +6,13 @@ import { useSettingsStore } from '@/store/settingsStore'
 import { User, Plus, Edit, Trash2, X, CheckCircle } from 'lucide-react'
 
 export default function NaverAccountSettings() {
-  const { naverAccount, setNaverAccount } = useSettingsStore()
+  const { naverAccounts, addNaverAccount, updateNaverAccount, deleteNaverAccount } = useSettingsStore()
   const [showModal, setShowModal] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [editingAccountId, setEditingAccountId] = useState<string | null>(null)
+  const [deletingAccountId, setDeletingAccountId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     alias: '',
     naverId: '',
@@ -18,15 +20,19 @@ export default function NaverAccountSettings() {
     blogUrl: ''
   })
 
-  const handleOpenModal = (editing = false) => {
+  const handleOpenModal = (editing = false, accountId?: string) => {
     setIsEditing(editing)
-    if (editing) {
-      setFormData({
-        alias: '메인',
-        naverId: naverAccount.email,
-        password: '',
-        blogUrl: 'https://blog.naver.com/' + naverAccount.email
-      })
+    setEditingAccountId(accountId || null)
+    if (editing && accountId) {
+      const account = naverAccounts.find(acc => acc.id === accountId)
+      if (account) {
+        setFormData({
+          alias: account.alias,
+          naverId: account.email,
+          password: '',
+          blogUrl: account.blogUrl || ''
+        })
+      }
     } else {
       setFormData({
         alias: '',
@@ -40,6 +46,8 @@ export default function NaverAccountSettings() {
 
   const handleCloseModal = () => {
     setShowModal(false)
+    setShowSuccess(false)
+    setEditingAccountId(null)
     setFormData({
       alias: '',
       naverId: '',
@@ -54,10 +62,21 @@ export default function NaverAccountSettings() {
       return
     }
     
-    setNaverAccount({
-      email: formData.naverId,
-      connected: true
-    })
+    if (isEditing && editingAccountId) {
+      updateNaverAccount(editingAccountId, {
+        alias: formData.alias,
+        email: formData.naverId,
+        blogUrl: formData.blogUrl,
+        connected: true
+      })
+    } else {
+      addNaverAccount({
+        alias: formData.alias,
+        email: formData.naverId,
+        blogUrl: formData.blogUrl,
+        connected: true
+      })
+    }
     
     setShowSuccess(true)
     // 3초 후 성공 메시지 숨기고 모달 닫기
@@ -68,11 +87,11 @@ export default function NaverAccountSettings() {
   }
 
   const handleDeleteAccount = () => {
-    setNaverAccount({
-      email: '',
-      connected: false
-    })
+    if (deletingAccountId) {
+      deleteNaverAccount(deletingAccountId)
+    }
     setShowDeleteModal(false)
+    setDeletingAccountId(null)
   }
 
   return (
@@ -91,34 +110,45 @@ export default function NaverAccountSettings() {
         </button>
       </div>
 
-      {naverAccount.connected ? (
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">메인</span>
-                <span className="text-blue-600">{naverAccount.email}</span>
+      {naverAccounts.length > 0 ? (
+        <div className="space-y-3">
+          {naverAccounts.map(account => (
+            <div key={account.id} className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{account.alias}</span>
+                    <span className="text-blue-600">{account.email}</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    네이버 블로그: {account.blogUrl ? (
+                      <span className="text-blue-600">블로그 방문하기</span>
+                    ) : (
+                      <span className="text-gray-400">URL 미설정</span>
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">확인</span>
+                  <button 
+                    onClick={() => handleOpenModal(true, account.id)}
+                    className="p-1 text-gray-400 hover:text-gray-600"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setDeletingAccountId(account.id)
+                      setShowDeleteModal(true)
+                    }}
+                    className="p-1 text-gray-400 hover:text-red-600"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-              <p className="text-sm text-gray-600 mt-1">
-                네이버 블로그: <span className="text-blue-600">블로그 방문하기</span>
-              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">확인</span>
-              <button 
-                onClick={() => handleOpenModal(true)}
-                className="p-1 text-gray-400 hover:text-gray-600"
-              >
-                <Edit className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setShowDeleteModal(true)}
-                className="p-1 text-gray-400 hover:text-red-600"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       ) : (
         <div className="text-center py-8">
@@ -273,7 +303,9 @@ export default function NaverAccountSettings() {
                   계정 삭제
                 </h3>
                 <p className="text-gray-600">
-                  <span className="font-medium">{naverAccount.email}</span> 계정을 삭제하시겠습니까?
+                  <span className="font-medium">
+                    {deletingAccountId ? naverAccounts.find(acc => acc.id === deletingAccountId)?.alias : ''}
+                  </span> 계정을 삭제하시겠습니까?
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
                   이 작업은 되돌릴 수 없습니다.
