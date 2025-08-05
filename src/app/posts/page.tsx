@@ -1,10 +1,11 @@
-// auto-blog-service\src\app\posts\page.tsx
+// src/app/posts/page.tsx
+// 게시글 목록 페이지
 
 export default function PostsPage() {
   return (
-    <main>
-      <h1>📚 게시글 목록</h1>
-      <p>작성된 게시글을 확인하세요.</p>
-    </main>
+    <div>
+      <h1 className="text-2xl font-bold">작성한 글</h1>
+      <p className="mt-4 text-gray-600">게시글 목록 페이지</p>
+    </div>
   );
 }

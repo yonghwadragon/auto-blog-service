@@ -1,10 +1,11 @@
-// auto-blog-service\src\app\write\page.tsx
+// src/app/write/page.tsx
+// 글 작성 페이지
 
 export default function WritePage() {
   return (
-    <main>
-      <h1>✍️ 글쓰기</h1>
-      <p>새로운 블로그 글을 작성하세요.</p>
-    </main>
+    <div>
+      <h1 className="text-2xl font-bold">글 작성</h1>
+      <p className="mt-4 text-gray-600">이미지 업로드, AI 글 생성 예정</p>
+    </div>
   );
 }

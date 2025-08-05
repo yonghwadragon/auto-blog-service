@@ -1,10 +1,11 @@
-// auto-blog-service\src\app\settings\page.tsx
+// src/app/settings/page.tsx
+// 설정 페이지
 
 export default function SettingsPage() {
   return (
-    <main>
-      <h1>⚙️ 설정</h1>
-      <p>프로필 및 환경 설정을 수정할 수 있습니다.</p>
-    </main>
+    <div>
+      <h1 className="text-2xl font-bold">설정</h1>
+      <p className="mt-4 text-gray-600">네이버 계정, Gemini API 키 설정</p>
+    </div>
   );
 }
