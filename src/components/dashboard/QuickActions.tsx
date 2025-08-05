@@ -29,21 +29,27 @@ const actions = [
 
 export default function QuickActions() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>빠른 작업</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4 md:grid-cols-3">
+    <Card className="mb-8 shadow-none border-0 bg-transparent">
+    <CardHeader className="bg-transparent px-0 pb-2">
+        <CardTitle className="text-xl font-bold text-gray-900">빠른 작업</CardTitle>
+    </CardHeader>
+    <CardContent className="px-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {actions.map((action) => (
-          <Link key={action.href} href={action.href}>
-            <Button variant="outline" className="w-full h-auto flex flex-col items-center p-6 space-y-2">
-              <action.icon className="w-6 h-6 mb-2" />
-              <span className="font-semibold">{action.title}</span>
-              <span className="text-sm text-gray-500 text-center">{action.description}</span>
-            </Button>
-          </Link>
+            <Link key={action.href} href={action.href}>
+            <div className="bg-white rounded-2xl shadow group transition ring-1 ring-green-100 hover:ring-green-400 hover:shadow-lg cursor-pointer flex flex-col items-center p-7 h-full border border-green-100">
+                <div className="mb-3 flex items-center justify-center w-14 h-14 rounded-full bg-green-500 group-hover:bg-green-600 transition">
+                <action.icon className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-center flex flex-col flex-1">
+                <div className="font-bold text-lg text-gray-900 mb-0.5">{action.title}</div>
+                <div className="text-[15px] text-gray-500">{action.description}</div>
+                </div>
+            </div>
+            </Link>
         ))}
-      </CardContent>
+        </div>
+    </CardContent>
     </Card>
   )
 }
