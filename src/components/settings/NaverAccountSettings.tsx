@@ -3,12 +3,13 @@
 
 import { useState } from 'react'
 import { useSettingsStore } from '@/store/settingsStore'
-import { User, Plus, Edit, Trash2, X } from 'lucide-react'
+import { User, Plus, Edit, Trash2, X, CheckCircle } from 'lucide-react'
 
 export default function NaverAccountSettings() {
   const { naverAccount, setNaverAccount } = useSettingsStore()
   const [showModal, setShowModal] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     alias: '',
     naverId: '',
@@ -57,8 +58,17 @@ export default function NaverAccountSettings() {
       connected: true
     })
     
-    alert('네이버 계정이 저장되었습니다!')
-    handleCloseModal()
+    if (isEditing) {
+      setShowSuccess(true)
+      // 3초 후 성공 메시지 숨기고 모달 닫기
+      setTimeout(() => {
+        setShowSuccess(false)
+        handleCloseModal()
+      }, 3000)
+    } else {
+      alert('네이버 계정이 저장되었습니다!')
+      handleCloseModal()
+    }
   }
 
   return (
@@ -141,6 +151,14 @@ export default function NaverAccountSettings() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* 성공 메시지 */}
+              {showSuccess && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="text-green-800 font-medium">계정이 수정되었습니다.</span>
+                </div>
+              )}
 
               {/* 폼 */}
               <div className="space-y-4">
