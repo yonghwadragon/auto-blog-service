@@ -15,7 +15,7 @@ export default function RecentPosts() {
         <h2 className="text-lg font-semibold text-gray-900">최근 작성한 글</h2>
         <button 
           className="text-green-600 hover:text-green-700 flex items-center gap-1"
-          onClick={() => router.push('/posts')}
+          onClick={() => window.location.reload()}
         >
           <RefreshCw className="w-4 h-4" />
           새로고침

@@ -20,12 +20,12 @@ export default function Navbar() {
     <div className="bg-white shadow-sm border-b">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
             <div className="bg-green-600 text-white p-2 rounded-lg">
               <FileText className="w-5 h-5" />
             </div>
             <h1 className="text-xl font-semibold text-gray-900">네이버 블로그 자동화</h1>
-          </div>
+          </Link>
           <div className="flex items-center gap-4">
             <button className="text-gray-600 hover:text-gray-900">
               <User className="w-5 h-5" />
