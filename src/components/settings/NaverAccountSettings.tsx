@@ -78,7 +78,6 @@ export default function NaverAccountSettings() {
       connected: false
     })
     setShowDeleteModal(false)
-    alert('계정이 삭제되었습니다.')
   }
 
   return (
