@@ -10,6 +10,7 @@ export default function NaverAccountSettings() {
   const [showModal, setShowModal] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [formData, setFormData] = useState({
     alias: '',
     naverId: '',
@@ -71,6 +72,15 @@ export default function NaverAccountSettings() {
     }
   }
 
+  const handleDeleteAccount = () => {
+    setNaverAccount({
+      email: '',
+      connected: false
+    })
+    setShowDeleteModal(false)
+    alert('계정이 삭제되었습니다.')
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex items-center justify-between mb-4">
@@ -107,7 +117,10 @@ export default function NaverAccountSettings() {
               >
                 <Edit className="w-4 h-4" />
               </button>
-              <button className="p-1 text-gray-400 hover:text-red-600">
+              <button 
+                onClick={() => setShowDeleteModal(true)}
+                className="p-1 text-gray-400 hover:text-red-600"
+              >
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -230,6 +243,47 @@ export default function NaverAccountSettings() {
                   className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
                 >
                   {isEditing ? '수정' : '저장'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-sm">
+            <div className="p-6">
+              {/* 모달 헤더 */}
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trash2 className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  계정 삭제
+                </h3>
+                <p className="text-gray-600">
+                  <span className="font-medium">{naverAccount.email}</span> 계정을 삭제하시겠습니까?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  이 작업은 되돌릴 수 없습니다.
+                </p>
+              </div>
+
+              {/* 버튼 */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+                >
+                  삭제
                 </button>
               </div>
             </div>
