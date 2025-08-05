@@ -16,8 +16,6 @@ export default function GeminiSettings() {
   const handleSaveApiKey = () => {
     if (geminiApiKey.trim()) {
       setShowSuccess(true)
-      // 3초 후 성공 메시지 숨기기
-      setTimeout(() => setShowSuccess(false), 3000)
     } else {
       alert('API 키를 입력해주세요.')
     }
