@@ -1,11 +1,14 @@
-// src/app/posts/page.tsx
-// 게시글 목록 페이지
+// ===== 4. src/app/posts/page.tsx =====
+import PostsList from '@/components/posts/PostsList'
+import PostsHeader from '@/components/posts/PostsHeader'
+import PostsFilters from '@/components/posts/PostsFilters'
 
 export default function PostsPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">작성한 글</h1>
-      <p className="mt-4 text-slate-600">게시글 목록 페이지</p>
+    <div className="space-y-6">
+      <PostsHeader />
+      <PostsFilters />
+      <PostsList />
     </div>
-  );
+  )
 }

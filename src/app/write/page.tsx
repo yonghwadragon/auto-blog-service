@@ -1,11 +1,10 @@
-// src/app/write/page.tsx
-// 글 작성 페이지
+// ===== 5. src/app/write/page.tsx =====
+import WritePostForm from '@/components/write/WritePostForm'
 
 export default function WritePage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">글 작성</h1>
-      <p className="mt-4 text-slate-600">이미지 업로드, AI 글 생성 예정</p>
+    <div className="max-w-4xl mx-auto">
+      <WritePostForm />
     </div>
-  );
+  )
 }

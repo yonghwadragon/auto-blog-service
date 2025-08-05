@@ -1,11 +1,14 @@
-// src/app/settings/page.tsx
-// 설정 페이지
+// ===== 6. src/app/settings/page.tsx =====
+import SettingsTabs from '@/components/settings/SettingsTabs'
 
 export default function SettingsPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">설정</h1>
-      <p className="mt-4 text-slate-600">네이버 계정, Gemini API 키 설정</p>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">설정</h1>
+        <p className="text-gray-600">네이버 계정과 AI 설정을 관리하세요</p>
+      </div>
+      <SettingsTabs />
     </div>
-  );
+  )
 }
