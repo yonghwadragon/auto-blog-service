@@ -1,10 +1,10 @@
-// auto-blog-service\src\app\write\page.tsx
+// ===== 5. src/app/write/page.tsx =====
+import WritePostForm from '@/components/write/WritePostForm'
 
 export default function WritePage() {
   return (
-    <main>
-      <h1>✍️ 글쓰기</h1>
-      <p>새로운 블로그 글을 작성하세요.</p>
-    </main>
-  );
+    <div className="max-w-4xl mx-auto">
+      <WritePostForm />
+    </div>
+  )
 }

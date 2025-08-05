@@ -1,10 +1,14 @@
-// auto-blog-service\src\app\posts\page.tsx
+// ===== 4. src/app/posts/page.tsx =====
+import PostsList from '@/components/posts/PostsList'
+import PostsHeader from '@/components/posts/PostsHeader'
+import PostsFilters from '@/components/posts/PostsFilters'
 
 export default function PostsPage() {
   return (
-    <main>
-      <h1>📚 게시글 목록</h1>
-      <p>작성된 게시글을 확인하세요.</p>
-    </main>
-  );
+    <div className="space-y-6">
+      <PostsHeader />
+      <PostsFilters />
+      <PostsList />
+    </div>
+  )
 }

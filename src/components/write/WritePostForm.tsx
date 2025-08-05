@@ -1,0 +1,217 @@
+ 'use client'
+
+
+  import { useState } from 'react'
+  import { useRouter } from 'next/navigation'
+  import { usePostStore } from '@/store/postStore'
+  import { useSettingsStore } from '@/store/settingsStore'
+  import { Send, Settings } from 'lucide-react'                               
+
+  export default function WritePostForm() {
+    const router = useRouter()
+    const { addPost } = usePostStore()
+    const { geminiApiKey } = useSettingsStore()
+
+    // 새 글 상태
+    const [newPost, setNewPost] = useState({
+      title: '',
+      content: '',
+      category: '춘천',
+      tags: '',
+      publishType: '즉시발행',
+    })
+
+    /** 글 저장 */
+    const handleCreatePost = () => {
+      const post = {
+        id: Date.now(),
+        ...newPost,
+        status: 'writing' as const,
+        createdAt: new Date().toISOString(),
+        image: null,
+      }
+      addPost(post)
+      router.push('/posts')
+    }
+
+    /** Gemini API로 내용 생성(예시) */
+    const handleGenerateWithAI = async () => {
+      if (!geminiApiKey) {
+        alert('Gemini API 키를 먼저 설정해주세요.')
+        return
+      }
+      setNewPost((prev) => ({
+        ...prev,
+        content: `AI가 생성한 샘플 콘텐츠입니다.
+
+${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제 Gemini API 연동 시 자동으로 생성될 내용의 예시입니다.
+
+주요 포인트:
+- 관련성 높은 정보 제공
+- 독자 친화적인 구성
+- SEO 최적화된 내용`,
+      }))
+    }
+
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">
+          맞춤 블로그 글 작성
+        </h2>
+
+        {/* 진행 단계 표시 */}
+        <div className="flex items-center mb-6">
+          <div className="flex items-center space-x-4">
+            {[1, 2, 3, 4].map((step, idx) => (
+              <div key={step} className="flex items-center">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    idx === 0
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}
+                >
+                  {step}
+                </div>
+                {idx < 3 && <div className="w-16 h-px bg-gray-300 mx-2" />}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 입력 폼 */}
+        <div className="space-y-6">
+          {/* 1) 기본 정보 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                작업 이름 *
+              </label>
+              <input
+                type="text"
+                placeholder="예: 춘천맛집 리뷰"
+                value={newPost.title}
+                onChange={(e) =>
+                  setNewPost((prev) => ({ ...prev, title: e.target.value }))
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                블로그 글 제목
+              </label>
+              <input
+                type="text"
+                placeholder="자동 생성됩니다 (직접 입력 가능)"
+                value={newPost.tags}
+                onChange={(e) =>
+                  setNewPost((prev) => ({ ...prev, tags: e.target.value }))
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg"
+              />
+            </div>
+          </div>
+
+          {/* 2) 위치 & 발행 유형 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                위치 *
+              </label>
+              <select
+                value={newPost.category}
+                onChange={(e) =>
+                  setNewPost((prev) => ({ ...prev, category: e.target.value }))
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg"
+              >
+                <option>춘천</option>
+                <option>서울</option>
+                <option>부산</option>
+                <option>대구</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                발행 유형
+              </label>
+              <select
+                value={newPost.publishType}
+                onChange={(e) =>
+                  setNewPost((prev) => ({
+                    ...prev,
+                    publishType: e.target.value,
+                  }))
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg"
+              >
+                <option>즉시발행</option>
+                <option>예약발행</option>
+                <option>임시저장</option>
+              </select>
+            </div>
+          </div>
+
+          {/* 3) 본문 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              내용
+            </label>
+            <textarea
+              placeholder="AI가 자동으로 생성할 내용을 입력하거나 직접 작성하세요"
+              value={newPost.content}
+              onChange={(e) =>
+                setNewPost((prev) => ({ ...prev, content: e.target.value }))
+              }
+              rows={8}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={handleGenerateWithAI}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                AI로 내용 생성
+              </button>
+            </div>
+          </div>
+
+          {/* 4) 안내 & 이용약관 */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-yellow-800 text-sm">
+              <strong>네이버 계정 선택:</strong> 등록된 네이버 계정이 없습니다.
+              설정 탭에서 계정을 추가하세요.
+            </p>
+          </div>
+
+          <div className="flex items-center">
+            <input type="checkbox" id="agree" className="mr-2" />
+            <label htmlFor="agree" className="text-sm text-gray-600">
+              콘텐츠가 이용약관에 맞춰 제공
+            </label>
+          </div>
+
+          {/* 5) 네비게이션 버튼 */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.back()}
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              이전 단계
+            </button>
+            <button
+              onClick={handleCreatePost}
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2"
+            >
+              다음 단계
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
