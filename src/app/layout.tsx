@@ -12,7 +12,7 @@ import Footer from '@/components/layout/Footer';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="flex h-screen">
+      <body className="h-screen flex flex-col md:flex-row">
         <Sidebar />
         <div className="flex flex-col flex-1">
           <Header />
