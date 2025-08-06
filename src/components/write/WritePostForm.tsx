@@ -24,12 +24,25 @@
       selectedNaverAccount: '',
     })
 
-    /** 글 저장 */
-    const handleCreatePost = () => {
+    /** 임시저장 */
+    const handleSavePost = () => {
       const post = {
         id: Date.now(),
         ...newPost,
         status: 'writing' as const,
+        createdAt: new Date().toISOString(),
+        image: null,
+      }
+      addPost(post)
+      alert('임시저장되었습니다.')
+    }
+
+    /** 다음 단계로 진행 */
+    const handleNextStep = () => {
+      const post = {
+        id: Date.now(),
+        ...newPost,
+        status: 'completed' as const,
         createdAt: new Date().toISOString(),
         image: null,
       }
@@ -307,17 +320,24 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             </label>
           </div>
 
-          {/* 5) 네비게이션 버튼 */}
+          {/* 네비게이션 버튼 */}
           <div className="flex gap-3">
             <button
               onClick={() => router.back()}
               className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
               style={{ fontSize: '16px' }}
             >
-              이전 단계
+              이전
             </button>
             <button
-              onClick={handleCreatePost}
+              onClick={handleSavePost}
+              className="px-6 py-3 border border-blue-300 rounded-lg hover:bg-blue-50 bg-white text-blue-600"
+              style={{ fontSize: '16px' }}
+            >
+              임시저장
+            </button>
+            <button
+              onClick={handleNextStep}
               className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2"
             >
               다음 단계
