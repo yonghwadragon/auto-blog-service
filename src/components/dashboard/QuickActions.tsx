@@ -28,31 +28,47 @@ const QuickActionCard = ({ title, description, icon: Icon, onClick, color }: Qui
 export default function QuickActions() {
   const router = useRouter()
 
+  const actions = [
+    {
+      id: 'write',
+      title: "새 글 쓰기",
+      description: "새 글을 업로드하고 새로 작성 글을 생성하세요",
+      icon: FileText,
+      color: "bg-green-500",
+      onClick: () => router.push('/write')
+    },
+    {
+      id: 'posts',
+      title: "작성한 글 보기",
+      description: "지금까지 작성한 모든 글을 확인하세요",
+      icon: Upload,
+      color: "bg-blue-500",
+      onClick: () => router.push('/posts')
+    },
+    {
+      id: 'settings',
+      title: "설정",
+      description: "네이버 계정과 Gemini API를 설정하세요",
+      icon: Settings,
+      color: "bg-gray-500",
+      onClick: () => router.push('/settings')
+    }
+  ]
+
   return (
     <div>
       <h2 className="text-lg font-semibold text-gray-900 mb-4">빠른 작업</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <QuickActionCard
-          title="새 글 쓰기"
-          description="새 글을 업로드하고 새로 작성 글을 생성하세요"
-          icon={FileText}
-          color="bg-green-500"
-          onClick={() => router.push('/write')}
-        />
-        <QuickActionCard
-          title="작성한 글 보기"
-          description="지금까지 작성한 모든 글을 확인하세요"
-          icon={Upload}
-          color="bg-blue-500"
-          onClick={() => router.push('/posts')}
-        />
-        <QuickActionCard
-          title="설정"
-          description="네이버 계정과 Gemini API를 설정하세요"
-          icon={Settings}
-          color="bg-gray-500"
-          onClick={() => router.push('/settings')}
-        />
+        {actions.map((action) => (
+          <QuickActionCard
+            key={action.id}
+            title={action.title}
+            description={action.description}
+            icon={action.icon}
+            color={action.color}
+            onClick={action.onClick}
+          />
+        ))}
       </div>
     </div>
   )
