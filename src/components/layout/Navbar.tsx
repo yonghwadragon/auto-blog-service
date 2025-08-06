@@ -4,10 +4,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FileText, User, Settings, BarChart3, PenTool, Edit3 } from 'lucide-react'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
+import { useAuthStore } from '@/store/authStore'
+import { FileText, User, Settings, BarChart3, PenTool, Edit3, LogOut, LogIn } from 'lucide-react'
 
 export default function Navbar() {
   const pathname = usePathname()
+  const { isAuthenticated, logout } = useAuthStore()
 
   const navItems = [
     { href: '/dashboard', label: '대시보드', icon: BarChart3 },
@@ -15,6 +19,15 @@ export default function Navbar() {
     { href: '/write', label: '글쓰기', icon: Edit3 },
     { href: '/settings', label: '설정', icon: Settings },
   ]
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      logout()
+    } catch (error) {
+      console.error('로그아웃 오류:', error)
+    }
+  }
 
   return (
     <div className="bg-white shadow-sm border-b">
@@ -27,12 +40,29 @@ export default function Navbar() {
             <h1 className="text-xl font-semibold text-gray-900">네이버 블로그 자동화</h1>
           </Link>
           <div className="flex items-center gap-4">
-            <button className="text-gray-600 hover:text-gray-900">
-              <User className="w-5 h-5" />
-            </button>
-            <button className="text-gray-600 hover:text-gray-900">
-              <Settings className="w-5 h-5" />
-            </button>
+            {isAuthenticated ? (
+              <>
+                <button className="text-gray-600 hover:text-gray-900">
+                  <User className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-gray-900 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  title="로그아웃"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="text-sm">로그아웃</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth"
+                className="text-gray-600 hover:text-gray-900 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span className="text-sm">로그인</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
