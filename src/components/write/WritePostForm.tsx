@@ -6,7 +6,7 @@
   import { usePostStore } from '@/store/postStore'
   import { useSettingsStore } from '@/store/settingsStore'
   import { useHydration } from '@/hooks/useHydration'
-  import { Send, Settings } from 'lucide-react'                               
+  import { Send, Settings, FileText, PenTool, Zap, Eye } from 'lucide-react'                               
 
   export default function WritePostForm() {
     const router = useRouter()
@@ -62,23 +62,67 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
           맞춤 블로그 글 작성
         </h2>
 
-        {/* 진행 단계 표시 */}
-        <div className="flex items-center mb-6">
-          <div className="flex items-center space-x-4">
-            {[1, 2, 3, 4].map((step, idx) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    idx === 0
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  {step}
+        {/* AI로 도와주는 쉽고 빠른 블로그 글 작성 */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* 1단계: 기본 정보 */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  1
                 </div>
-                {idx < 3 && <div className="w-16 h-px bg-gray-300 mx-2" />}
+                <span className="text-green-800 font-medium text-sm">기본 정보</span>
               </div>
-            ))}
+              <p className="text-green-700 text-xs leading-relaxed">
+                작성할 주제와<br />
+                글 입력하기<br />
+                세요
+              </p>
+            </div>
+
+            {/* 2단계: 사진 업로드 */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 relative">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  2
+                </div>
+                <span className="text-gray-600 font-medium text-sm">사진 업로드</span>
+              </div>
+              <p className="text-gray-500 text-xs leading-relaxed">
+                사진과 메<br />
+                모를 추가<br />
+                하세요
+              </p>
+            </div>
+
+            {/* 3단계: 콘텐츠 생성 */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 relative">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  3
+                </div>
+                <span className="text-gray-600 font-medium text-s">콘텐츠 생성</span>
+              </div>
+              <p className="text-gray-500 text-xs leading-relaxed">
+                AI로 블로그<br />
+                글을 생성하<br />
+                세요
+              </p>
+            </div>
+
+            {/* 4단계: 미리보기 */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 relative">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  4
+                </div>
+                <span className="text-gray-600 font-medium text-sm">미리보기</span>
+              </div>
+              <p className="text-gray-500 text-xs leading-relaxed">
+                작성 결과를 확인하<br/>
+                고
+              </p>
+            </div>
           </div>
         </div>
 
