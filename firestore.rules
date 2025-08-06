@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 사용자는 자신의 데이터만 접근 가능
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // 사용자의 하위 컬렉션 (posts, settings 등)
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // 사용자별 게시물
+    match /posts/{postId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // 사용자별 설정
+    match /settings/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 나머지 모든 접근은 거부
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
