@@ -116,7 +116,7 @@ export default function PostsList() {
             <div className="flex gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <button
-                  key={`posts-page-${page}`}
+                  key={`posts-list-pagination-${page}`}
                   onClick={() => setCurrentPage(page)}
                   className={`px-3 py-1 text-sm rounded-lg ${
                     currentPage === page

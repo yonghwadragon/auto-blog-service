@@ -181,7 +181,7 @@ export default function NaverAccountSettings() {
                 <div className="flex gap-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <button
-                      key={`naver-page-${page}`}
+                      key={`naver-accounts-pagination-${page}`}
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-1 text-sm rounded-lg ${
                         currentPage === page
