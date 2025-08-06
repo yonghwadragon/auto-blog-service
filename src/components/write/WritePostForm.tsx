@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useHydration } from '@/hooks/useHydration'
-import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle } from 'lucide-react'                               
+import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle, Upload, X, Camera } from 'lucide-react'                               
 
   export default function WritePostForm() {
     const router = useRouter()
@@ -28,6 +28,15 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle }
     
     // 현재 진행 단계 (1: 기본 정보, 2: 사진 업로드, 3: 콘텐츠 생성, 4: 미리보기)
     const [currentStep, setCurrentStep] = useState(1)
+    
+    // 사진 업로드 상태
+    const [uploadedPhotos, setUploadedPhotos] = useState<Array<{
+      id: string;
+      file: File;
+      url: string;
+      memo: string;
+    }>>([])
+    const [isDragOver, setIsDragOver] = useState(false)
 
     /** 임시저장 */
     const handleSavePost = () => {
@@ -117,6 +126,74 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 - 독자 친화적인 구성
 - SEO 최적화된 내용`,
       }))
+    }
+
+    /** 사진 업로드 핸들러 */
+    const handlePhotoUpload = (files: FileList | File[]) => {
+      const fileArray = Array.from(files)
+      const imageFiles = fileArray.filter(file => file.type.startsWith('image/'))
+      
+      imageFiles.forEach(file => {
+        const id = Date.now() + Math.random().toString()
+        const url = URL.createObjectURL(file)
+        
+        setUploadedPhotos(prev => [...prev, {
+          id,
+          file,
+          url,
+          memo: ''
+        }])
+      })
+    }
+
+    /** 드래그 오버 핸들러 */
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(true)
+    }
+
+    /** 드래그 리브 핸들러 */
+    const handleDragLeave = (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(false)
+    }
+
+    /** 드롭 핸들러 */
+    const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(false)
+      const files = e.dataTransfer.files
+      if (files.length > 0) {
+        handlePhotoUpload(files)
+      }
+    }
+
+    /** 파일 선택 핸들러 */
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files
+      if (files && files.length > 0) {
+        handlePhotoUpload(files)
+      }
+    }
+
+    /** 사진 삭제 */
+    const removePhoto = (id: string) => {
+      setUploadedPhotos(prev => {
+        const photoToRemove = prev.find(p => p.id === id)
+        if (photoToRemove) {
+          URL.revokeObjectURL(photoToRemove.url)
+        }
+        return prev.filter(p => p.id !== id)
+      })
+    }
+
+    /** 사진 메모 업데이트 */
+    const updatePhotoMemo = (id: string, memo: string) => {
+      setUploadedPhotos(prev => 
+        prev.map(photo => 
+          photo.id === id ? { ...photo, memo } : photo
+        )
+      )
     }
 
     return (
@@ -211,6 +288,95 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
         {/* 입력 폼 */}
         <div className="space-y-6">
+          {/* 2단계: 사진 업로드 */}
+          {currentStep === 2 && (
+            <>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">사진 업로드</h3>
+                <p className="text-gray-600 mb-6">맛집의 사진들을 업로드하고 각각에 대한 메모를 추가해보세요.</p>
+                
+                {/* 드래그 앤 드롭 영역 */}
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+                    isDragOver
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-300 hover:border-green-400 hover:bg-gray-50'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <Camera className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    사진을 드래그하여 업로드하세요
+                  </h4>
+                  <p className="text-gray-600 mb-4">
+                    또는 아래 버튼을 클릭하여 파일을 선택하세요
+                  </p>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                  <label
+                    htmlFor="photo-upload"
+                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 cursor-pointer inline-flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    파일 선택
+                  </label>
+                </div>
+
+                {/* 업로드된 사진 목록 */}
+                {uploadedPhotos.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="text-md font-semibold text-gray-900 mb-4">
+                      업로드된 사진 ({uploadedPhotos.length}장)
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {uploadedPhotos.map((photo) => (
+                        <div key={photo.id} className="bg-white rounded-lg border p-4">
+                          <div className="relative">
+                            <img
+                              src={photo.url}
+                              alt="업로드된 사진"
+                              className="w-full h-48 object-cover rounded-lg mb-3"
+                            />
+                            <button
+                              onClick={() => removePhoto(photo.id)}
+                              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              사진 설명
+                            </label>
+                            <textarea
+                              value={photo.memo}
+                              onChange={(e) => updatePhotoMemo(photo.id, e.target.value)}
+                              placeholder="이 사진에 대한 설명을 입력하세요..."
+                              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                              rows={3}
+                              style={{ fontSize: '16px' }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          
+          {/* 1단계와 3,4단계: 기존 폼 */}
+          {currentStep !== 2 && (
+            <>
           {/* 1) 기본 정보 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -390,6 +556,9 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               프렌차이즈 매장입니다
             </label>
           </div>
+          
+          </>
+          )}
 
           {/* 네비게이션 버튼 */}
           <div className="flex gap-3">
