@@ -72,7 +72,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그\n글을 생성하\n세요' },
                 { num: 4, title: '미리보기', desc: '작성 결과를 확인하\n고' }
               ].map((step, idx) => (
-                <div key={step.num} className="flex items-center">
+                <div key={`step-${step.num}-${idx}`} className="flex items-center">
                   <div className="text-center">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
