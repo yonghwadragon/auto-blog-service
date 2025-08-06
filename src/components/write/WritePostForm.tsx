@@ -5,12 +5,14 @@
   import { useRouter } from 'next/navigation'
   import { usePostStore } from '@/store/postStore'
   import { useSettingsStore } from '@/store/settingsStore'
+  import { useHydration } from '@/hooks/useHydration'
   import { Send, Settings } from 'lucide-react'                               
 
   export default function WritePostForm() {
     const router = useRouter()
+    const hydrated = useHydration()
     const { addPost } = usePostStore()
-    const { geminiApiKey } = useSettingsStore()
+    const { geminiApiKey, naverAccounts } = useSettingsStore()
 
     // 새 글 상태
     const [newPost, setNewPost] = useState({
@@ -198,13 +200,33 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             </div>
           </div>
 
-          {/* 4) 안내 & 이용약관 */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <p className="text-yellow-800 text-sm">
-              <strong>네이버 계정 선택:</strong> 등록된 네이버 계정이 없습니다.
-              설정 탭에서 계정을 추가하세요.
-            </p>
-          </div>
+          {/* 4) 네이버 계정 상태 안내 */}
+          {(() => {
+            const safeNaverAccounts = hydrated && naverAccounts ? naverAccounts : []
+            const connectedAccounts = safeNaverAccounts.filter(account => account.connected)
+            
+            if (connectedAccounts.length === 0) {
+              return (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-yellow-800 text-sm">
+                    <strong>네이버 계정 선택:</strong> 등록된 네이버 계정이 없습니다.
+                    설정 탭에서 계정을 추가하세요.
+                  </p>
+                </div>
+              )
+            } else {
+              return (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p className="text-green-800 text-sm">
+                    <strong>네이버 계정 선택:</strong> {connectedAccounts.length}개의 네이버 계정이 등록되어 있습니다.
+                    {connectedAccounts.length === 1 
+                      ? ` (${connectedAccounts[0].alias || connectedAccounts[0].email})`
+                      : ` 설정에서 계정을 선택하세요.`}
+                  </p>
+                </div>
+              )
+            }
+          })()}
 
           <div className="flex items-center">
             <input type="checkbox" id="agree" className="mr-2" />
