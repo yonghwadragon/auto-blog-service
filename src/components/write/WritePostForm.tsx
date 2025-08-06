@@ -1,12 +1,11 @@
  'use client'
 
-
-  import { useState } from 'react'
-  import { useRouter } from 'next/navigation'
-  import { usePostStore } from '@/store/postStore'
-  import { useSettingsStore } from '@/store/settingsStore'
-  import { useHydration } from '@/hooks/useHydration'
-  import { Send, Settings, FileText, PenTool, Zap, Eye } from 'lucide-react'                               
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { usePostStore } from '@/store/postStore'
+import { useSettingsStore } from '@/store/settingsStore'
+import { useHydration } from '@/hooks/useHydration'
+import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle } from 'lucide-react'                               
 
   export default function WritePostForm() {
     const router = useRouter()
@@ -24,6 +23,9 @@
       selectedNaverAccount: '',
     })
 
+    // 알림 상태
+    const [showNotification, setShowNotification] = useState(false)
+
     /** 임시저장 */
     const handleSavePost = () => {
       const post = {
@@ -34,11 +36,34 @@
         image: null,
       }
       addPost(post)
-      alert('임시저장되었습니다.')
+      
+      // 성공 알림 표시
+      setShowNotification(true)
+      setTimeout(() => {
+        setShowNotification(false)
+      }, 3000)
     }
 
     /** 다음 단계로 진행 */
     const handleNextStep = () => {
+      // 필수 필드 검증
+      if (!newPost.title.trim()) {
+        alert('작업 이름을 입력해주세요.')
+        return
+      }
+      if (!newPost.tags.trim()) {
+        alert('블로그 글 제목을 입력해주세요.')
+        return
+      }
+      if (!newPost.category.trim()) {
+        alert('위치를 선택해주세요.')
+        return
+      }
+      if (!newPost.publishType.trim()) {
+        alert('발행 유형을 선택해주세요.')
+        return
+      }
+
       const post = {
         id: Date.now(),
         ...newPost,
@@ -177,7 +202,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                블로그 글 제목
+                블로그 글 제목 *
               </label>
               <input
                 type="text"
@@ -220,7 +245,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                발행 유형
+                발행 유형 *
               </label>
               <select
                 value={newPost.publishType}
@@ -344,6 +369,16 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               <Send className="w-4 h-4" />
             </button>
           </div>
+
+          {/* 임시저장 성공 알림 */}
+          {showNotification && (
+            <div className="fixed top-4 right-4 z-50 animate-in fade-in duration-300">
+              <div className="bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">임시저장되었습니다</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
