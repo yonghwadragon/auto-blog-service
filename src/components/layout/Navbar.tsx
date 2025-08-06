@@ -11,7 +11,7 @@ import { FileText, User, Settings, BarChart3, PenTool, Edit3, LogOut, LogIn } fr
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { isAuthenticated, logout } = useAuthStore()
+  const { isAuthenticated, isLoading, logout } = useAuthStore()
 
   const navItems = [
     { href: '/dashboard', label: '대시보드', icon: BarChart3 },
@@ -40,7 +40,9 @@ export default function Navbar() {
             <h1 className="text-xl font-semibold text-gray-900">네이버 블로그 자동화</h1>
           </Link>
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
+            ) : isAuthenticated ? (
               <>
                 <button className="text-gray-600 hover:text-gray-900">
                   <User className="w-5 h-5" />

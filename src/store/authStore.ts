@@ -34,7 +34,9 @@ export const useAuthStore = create<AuthState>()(
       // user 객체는 직렬화가 복잡하므로 isAuthenticated만 저장
       partialize: (state) => ({ 
         isAuthenticated: state.isAuthenticated
-      })
+      }),
+      // hydration 안전성을 위한 설정
+      skipHydration: true,
     }
   )
 )
