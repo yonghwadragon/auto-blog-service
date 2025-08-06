@@ -1,13 +1,24 @@
 // ===== 13. src/components/posts/PostsList.tsx =====
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
-import { FileText, Plus, Eye, Edit, Trash2 } from 'lucide-react'
+import { FileText, Plus, Eye, Edit, Trash2, X } from 'lucide-react'
 
 export default function PostsList() {
   const router = useRouter()
-  const { posts } = usePostStore()
+  const { posts, deletePost } = usePostStore()
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deletingPostId, setDeletingPostId] = useState<number | null>(null)
+
+  const handleDeletePost = () => {
+    if (deletingPostId !== null) {
+      deletePost(deletingPostId)
+    }
+    setShowDeleteModal(false)
+    setDeletingPostId(null)
+  }
 
   if (posts.length === 0) {
     return (
@@ -56,7 +67,13 @@ export default function PostsList() {
                 <button className="p-2 text-gray-400 hover:text-gray-600">
                   <Edit className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-400 hover:text-red-600">
+                <button 
+                  onClick={() => {
+                    setDeletingPostId(post.id)
+                    setShowDeleteModal(true)
+                  }}
+                  className="p-2 text-gray-400 hover:text-red-600"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -64,6 +81,52 @@ export default function PostsList() {
           </div>
         ))}
       </div>
+      
+      {/* 삭제 확인 모달 */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-sm">
+            <div className="p-6">
+              {/* 모달 헤더 */}
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trash2 className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  글 삭제
+                </h3>
+                <p className="text-gray-600">
+                  <span className="font-medium">
+                    {deletingPostId ? posts.find(post => post.id === deletingPostId)?.title : ''}
+                  </span> 글을 삭제하시겠습니까?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  이 작업은 되돌릴 수 없습니다.
+                </p>
+              </div>
+
+              {/* 버튼 */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false)
+                    setDeletingPostId(null)
+                  }}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+                >
+                  삭제
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
