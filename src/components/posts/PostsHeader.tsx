@@ -3,17 +3,22 @@
 
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
+import { useHydration } from '@/hooks/useHydration'
 import { Plus, RefreshCw } from 'lucide-react'
 
 export default function PostsHeader() {
   const router = useRouter()
+  const hydrated = useHydration()
   const { posts } = usePostStore()
+  
+  // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
+  const safePosts = hydrated && posts ? posts : []
 
   return (
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">작성한 글</h1>
-        <p className="text-gray-600">총 {posts.length}개의 글이 있습니다</p>
+        <p className="text-gray-600">총 {safePosts.length}개의 글이 있습니다</p>
       </div>
       <div className="flex items-center gap-3">
         <button 

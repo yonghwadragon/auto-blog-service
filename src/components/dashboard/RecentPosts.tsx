@@ -3,14 +3,19 @@
 
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
+import { useHydration } from '@/hooks/useHydration'
 import { FileText, RefreshCw } from 'lucide-react'
 
 export default function RecentPosts() {
   const router = useRouter()
+  const hydrated = useHydration()
   const { posts } = usePostStore()
   
+  // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
+  const safePosts = hydrated && posts ? posts : []
+  
   // 최신순으로 정렬한 후 3개만 선택
-  const recentPosts = posts
+  const recentPosts = safePosts
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 3)
 
@@ -27,7 +32,7 @@ export default function RecentPosts() {
         </button>
       </div>
       
-      {posts.length === 0 ? (
+      {safePosts.length === 0 ? (
         <div className="text-center py-8">
           <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 mb-4">아직 작성한 글이 없습니다</p>

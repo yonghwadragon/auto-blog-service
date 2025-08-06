@@ -42,6 +42,7 @@ export const usePostStore = create<PostStore>()(
     }),
     {
       name: 'post-store',
+      skipHydration: true,
     }
   )
 )

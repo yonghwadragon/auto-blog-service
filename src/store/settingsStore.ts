@@ -39,6 +39,7 @@ export const useSettingsStore = create<SettingsStore>()(
     }),
     {
       name: 'settings-store',
+      skipHydration: true,
     }
   )
 )

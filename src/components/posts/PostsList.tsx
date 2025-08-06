@@ -4,13 +4,18 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
+import { useHydration } from '@/hooks/useHydration'
 import { FileText, Plus, Eye, Edit, Trash2, X } from 'lucide-react'
 
 export default function PostsList() {
   const router = useRouter()
+  const hydrated = useHydration()
   const { posts, deletePost } = usePostStore()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null)
+  
+  // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
+  const safePosts = hydrated && posts ? posts : []
 
   const handleDeletePost = () => {
     if (deletingPostId !== null) {
@@ -20,7 +25,7 @@ export default function PostsList() {
     setDeletingPostId(null)
   }
 
-  if (posts.length === 0) {
+  if (safePosts.length === 0) {
     return (
       <div className="bg-white rounded-lg p-12 text-center shadow-sm border">
         <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -43,7 +48,7 @@ export default function PostsList() {
         <h3 className="font-medium text-gray-900">글 목록</h3>
       </div>
       <div className="divide-y">
-        {posts.map(post => (
+        {safePosts.map(post => (
           <div key={post.id} className="p-4 hover:bg-gray-50">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -97,7 +102,7 @@ export default function PostsList() {
                 </h3>
                 <p className="text-gray-600">
                   <span className="font-medium">
-                    {deletingPostId ? posts.find(post => post.id === deletingPostId)?.title : ''}
+                    {deletingPostId ? safePosts.find(post => post.id === deletingPostId)?.title : ''}
                   </span> 글을 삭제하시겠습니까?
                 </p>
                 <p className="text-sm text-gray-500 mt-2">

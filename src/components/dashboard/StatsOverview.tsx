@@ -2,6 +2,7 @@
 'use client'
 
 import { usePostStore } from '@/store/postStore'
+import { useHydration } from '@/hooks/useHydration'
 import { FileText, Clock, CheckCircle, Send } from 'lucide-react'
 
 interface StatCardProps {
@@ -22,13 +23,17 @@ const StatCard = ({ title, value, icon: Icon, color }: StatCardProps) => (
 )
 
 export default function StatsOverview() {
+  const hydrated = useHydration()
   const { posts } = usePostStore()
+  
+  // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
+  const safePosts = hydrated && posts ? posts : []
 
   const stats = {
-    total: posts.length,
-    writing: posts.filter(p => p.status === 'writing').length,
-    completed: posts.filter(p => p.status === 'completed').length,
-    published: posts.filter(p => p.status === 'published').length
+    total: safePosts.length,
+    writing: safePosts.filter(p => p.status === 'writing').length,
+    completed: safePosts.filter(p => p.status === 'completed').length,
+    published: safePosts.filter(p => p.status === 'published').length
   }
 
   return (
