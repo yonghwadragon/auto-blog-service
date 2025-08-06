@@ -94,7 +94,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                       {step.desc}
                     </div>
                   </div>
-                  {idx < 3 && <div className="w-16 h-px bg-gray-300 mx-4" />}
+                  {idx < 3 && <div key={`connector-${idx}`} className="w-16 h-px bg-gray-300 mx-4" />}
                 </div>
               ))}
             </div>
