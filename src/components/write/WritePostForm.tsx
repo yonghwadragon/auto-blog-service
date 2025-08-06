@@ -64,40 +64,42 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
         {/* 진행 단계 표시 */}
         <div className="mb-8">
-          {/* 데스크톱 버전 */}
-          <div className="hidden md:flex items-center justify-center mb-6">
-            <div className="flex items-center space-x-4">
-              {[
-                { num: 1, title: '기본 정보', desc: '작성할 주제와\n글 입력하기\n세요' },
-                { num: 2, title: '사진 업로드', desc: '사진과 메\n모를 추가\n하세요' },
-                { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그\n글을 생성하\n세요' },
-                { num: 4, title: '미리보기', desc: '작성 결과를 확인하\n고' }
-              ].map((step, idx) => (
-                <div key={`step-${step.num}-${idx}`} className="flex items-center">
-                  <div className="text-center">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
-                        idx === 0
-                          ? 'bg-green-600 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}
-                    >
-                      {step.num}
+          {/* 데스크톱 버전 - 가로 연결선 */}
+          <div className="hidden md:block mb-6">
+            <div className="flex items-center justify-center">
+              <div className="flex items-center space-x-4">
+                {[
+                  { num: 1, title: '기본 정보', desc: '작성할 주제와\n글 입력하기\n세요' },
+                  { num: 2, title: '사진 업로드', desc: '사진과 메\n모를 추가\n하세요' },
+                  { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그\n글을 생성하\n세요' },
+                  { num: 4, title: '미리보기', desc: '작성 결과를 확인하\n고' }
+                ].map((step, idx) => (
+                  <div key={`step-${step.num}-${idx}`} className="flex items-center">
+                    <div className="text-center">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
+                          idx === 0
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gray-200 text-gray-600'
+                        }`}
+                      >
+                        {step.num}
+                      </div>
+                      <div className={`text-xs font-medium mb-1 ${
+                        idx === 0 ? 'text-green-800' : 'text-gray-600'
+                      }`}>
+                        {step.title}
+                      </div>
+                      <div className={`text-xs whitespace-pre-line leading-tight ${
+                        idx === 0 ? 'text-green-700' : 'text-gray-500'
+                      }`}>
+                        {step.desc}
+                      </div>
                     </div>
-                    <div className={`text-xs font-medium mb-1 ${
-                      idx === 0 ? 'text-green-800' : 'text-gray-600'
-                    }`}>
-                      {step.title}
-                    </div>
-                    <div className={`text-xs whitespace-pre-line leading-tight ${
-                      idx === 0 ? 'text-green-700' : 'text-gray-500'
-                    }`}>
-                      {step.desc}
-                    </div>
+                    {idx < 3 && <div key={`connector-${idx}`} className="w-16 h-px bg-gray-300 mx-4" />}
                   </div>
-                  {idx < 3 && <div key={`connector-${idx}`} className="w-16 h-px bg-gray-300 mx-4" />}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
