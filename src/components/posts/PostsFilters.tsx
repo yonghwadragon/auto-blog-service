@@ -11,7 +11,12 @@ export default function PostsFilters() {
         <input
           type="text"
           placeholder="작성명이나 제목으로 검색"
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg"
+          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500"
+          autoCapitalize="none"
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck="false"
+          style={{ WebkitAppearance: 'none', fontSize: '16px' }}
         />
       </div>
       <select className="px-4 py-2 border border-gray-300 rounded-lg">

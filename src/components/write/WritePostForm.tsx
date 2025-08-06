@@ -94,7 +94,12 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 onChange={(e) =>
                   setNewPost((prev) => ({ ...prev, title: e.target.value }))
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck="false"
+                style={{ WebkitAppearance: 'none', fontSize: '16px' }}
               />
             </div>
 
@@ -109,7 +114,12 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 onChange={(e) =>
                   setNewPost((prev) => ({ ...prev, tags: e.target.value }))
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500"
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck="false"
+                style={{ WebkitAppearance: 'none', fontSize: '16px' }}
               />
             </div>
           </div>
@@ -167,7 +177,12 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 setNewPost((prev) => ({ ...prev, content: e.target.value }))
               }
               rows={8}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck="false"
+              style={{ WebkitAppearance: 'none', fontSize: '16px' }}
             />
             <div className="mt-2 flex gap-2">
               <button
