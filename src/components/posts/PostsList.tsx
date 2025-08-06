@@ -25,7 +25,7 @@ export default function PostsList() {
       <div className="bg-white rounded-lg p-12 text-center shadow-sm border">
         <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">작성한 글이 없습니다</h3>
-        <p className="text-gray-500 mb-6">첫 번째 맞춤 글을 시도 작성해보세요!</p>
+        <p className="text-gray-500 mb-6">첫 번째 맛집 글을 AI로 작성해보세요!</p>
         <button 
           onClick={() => router.push('/write')}
           className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2 mx-auto"
