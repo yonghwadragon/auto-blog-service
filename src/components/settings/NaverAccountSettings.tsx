@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { useSettingsStore } from '@/store/settingsStore'
-import { User, Plus, Edit, Trash2, X, CheckCircle } from 'lucide-react'
+import { User, Plus, Edit, Trash2, X, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function NaverAccountSettings() {
   const { naverAccounts, addNaverAccount, updateNaverAccount, deleteNaverAccount } = useSettingsStore()

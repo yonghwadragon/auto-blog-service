@@ -21,6 +21,7 @@
       category: '춘천',
       tags: '',
       publishType: '즉시발행',
+      selectedNaverAccount: '',
     })
 
     /** 글 저장 */
@@ -200,7 +201,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             </div>
           </div>
 
-          {/* 4) 네이버 계정 상태 안내 */}
+          {/* 4) 네이버 계정 선택 */}
           {(() => {
             const safeNaverAccounts = hydrated && naverAccounts ? naverAccounts : []
             const connectedAccounts = safeNaverAccounts.filter(account => account.connected)
@@ -217,12 +218,27 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             } else {
               return (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-green-800 text-sm">
-                    <strong>네이버 계정 선택:</strong> {connectedAccounts.length}개의 네이버 계정이 등록되어 있습니다.
-                    {connectedAccounts.length === 1 
-                      ? ` (${connectedAccounts[0].alias || connectedAccounts[0].email})`
-                      : ` 설정에서 계정을 선택하세요.`}
-                  </p>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-green-800 text-sm font-medium">
+                      네이버 계정 선택 ({connectedAccounts.length}개 등록됨)
+                    </p>
+                  </div>
+                  <select
+                    value={newPost.selectedNaverAccount}
+                    onChange={(e) =>
+                      setNewPost((prev) => ({ ...prev, selectedNaverAccount: e.target.value }))
+                    }
+                    className="w-full p-3 border border-green-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    style={{ WebkitAppearance: 'none', fontSize: '16px' }}
+                  >
+                    <option value="">발행할 네이버 계정을 선택하세요</option>
+                    {connectedAccounts.map(account => (
+                      <option key={account.id} value={account.id}>
+                        {account.alias} ({account.email})
+                        {account.blogUrl ? ` - ${account.blogUrl}` : ' - URL 미설정'}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )
             }
