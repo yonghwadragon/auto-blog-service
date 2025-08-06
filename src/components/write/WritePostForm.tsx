@@ -25,6 +25,9 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle }
 
     // 알림 상태
     const [showNotification, setShowNotification] = useState(false)
+    
+    // 현재 진행 단계 (1: 기본 정보, 2: 사진 업로드, 3: 콘텐츠 생성, 4: 미리보기)
+    const [currentStep, setCurrentStep] = useState(1)
 
     /** 임시저장 */
     const handleSavePost = () => {
@@ -46,41 +49,55 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle }
 
     /** 다음 단계로 진행 */
     const handleNextStep = () => {
-      // 필수 필드 검증
-      if (!newPost.title.trim()) {
-        alert('작업 이름을 입력해주세요.')
+      if (currentStep === 1) {
+        // 1단계에서는 기본 필드만 검증하고 2단계로 이동
+        if (!newPost.title.trim()) {
+          alert('작업 이름을 입력해주세요.')
+          return
+        }
+        if (!newPost.tags.trim()) {
+          alert('블로그 글 제목을 입력해주세요.')
+          return
+        }
+        if (!newPost.category.trim()) {
+          alert('위치를 선택해주세요.')
+          return
+        }
+        if (!newPost.publishType.trim()) {
+          alert('발행 유형을 선택해주세요.')
+          return
+        }
+        
+        // 2단계로 이동
+        setCurrentStep(2)
         return
       }
-      if (!newPost.tags.trim()) {
-        alert('블로그 글 제목을 입력해주세요.')
-        return
-      }
-      if (!newPost.category.trim()) {
-        alert('위치를 선택해주세요.')
-        return
-      }
-      if (!newPost.publishType.trim()) {
-        alert('발행 유형을 선택해주세요.')
-        return
-      }
-      if (!newPost.content.trim()) {
-        alert('내용을 입력해주세요.')
-        return
-      }
-      if (!newPost.selectedNaverAccount.trim()) {
-        alert('네이버 계정을 선택해주세요.')
-        return
-      }
+      
+      if (currentStep === 4) {
+        // 마지막 단계에서 모든 필드 검증 후 완료
+        if (!newPost.content.trim()) {
+          alert('내용을 입력해주세요.')
+          return
+        }
+        if (!newPost.selectedNaverAccount.trim()) {
+          alert('네이버 계정을 선택해주세요.')
+          return
+        }
 
-      const post = {
-        id: Date.now(),
-        ...newPost,
-        status: 'completed' as const,
-        createdAt: new Date().toISOString(),
-        image: null,
+        const post = {
+          id: Date.now(),
+          ...newPost,
+          status: 'completed' as const,
+          createdAt: new Date().toISOString(),
+          image: null,
+        }
+        addPost(post)
+        router.push('/posts')
+        return
       }
-      addPost(post)
-      router.push('/posts')
+      
+      // 중간 단계들은 단순히 다음 단계로 이동
+      setCurrentStep(prev => Math.min(prev + 1, 4))
     }
 
     /** Gemini API로 내용 생성(예시) */
@@ -124,20 +141,24 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                     <div className="text-center">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
-                          idx === 0
+                          step.num === currentStep
                             ? 'bg-green-600 text-white'
+                            : step.num < currentStep
+                            ? 'bg-green-100 text-green-600'
                             : 'bg-gray-200 text-gray-600'
                         }`}
                       >
                         {step.num}
                       </div>
                       <div className={`text-xs font-medium mb-1 ${
-                        idx === 0 ? 'text-green-800' : 'text-gray-600'
+                        step.num === currentStep ? 'text-green-800' : 
+                        step.num < currentStep ? 'text-green-600' : 'text-gray-600'
                       }`}>
                         {step.title}
                       </div>
                       <div className={`text-xs whitespace-pre-line leading-tight ${
-                        idx === 0 ? 'text-green-700' : 'text-gray-500'
+                        step.num === currentStep ? 'text-green-700' : 
+                        step.num < currentStep ? 'text-green-500' : 'text-gray-500'
                       }`}>
                         {step.desc}
                       </div>
@@ -161,20 +182,24 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 <div key={`mobile-step-${step.num}`} className="text-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 mx-auto ${
-                      idx === 0
+                      step.num === currentStep
                         ? 'bg-green-600 text-white'
+                        : step.num < currentStep
+                        ? 'bg-green-100 text-green-600'
                         : 'bg-gray-200 text-gray-600'
                     }`}
                   >
                     {step.num}
                   </div>
                   <div className={`text-xs font-medium mb-1 ${
-                    idx === 0 ? 'text-green-800' : 'text-gray-600'
+                    step.num === currentStep ? 'text-green-800' : 
+                    step.num < currentStep ? 'text-green-600' : 'text-gray-600'
                   }`}>
                     {step.title}
                   </div>
                   <div className={`text-xs leading-tight ${
-                    idx === 0 ? 'text-green-700' : 'text-gray-500'
+                    step.num === currentStep ? 'text-green-700' : 
+                    step.num < currentStep ? 'text-green-500' : 'text-gray-500'
                   }`}>
                     {step.desc}
                   </div>
@@ -368,13 +393,23 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
           {/* 네비게이션 버튼 */}
           <div className="flex gap-3">
-            <button
-              onClick={() => router.back()}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
-              style={{ fontSize: '16px' }}
-            >
-              이전
-            </button>
+            {currentStep > 1 ? (
+              <button
+                onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))}
+                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
+                style={{ fontSize: '16px' }}
+              >
+                이전 단계
+              </button>
+            ) : (
+              <button
+                onClick={() => router.back()}
+                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
+                style={{ fontSize: '16px' }}
+              >
+                이전
+              </button>
+            )}
             <button
               onClick={handleSavePost}
               className="px-6 py-3 border border-blue-300 rounded-lg hover:bg-blue-50 bg-white text-blue-600"
@@ -386,7 +421,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               onClick={handleNextStep}
               className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2"
             >
-              다음 단계
+              {currentStep === 4 ? '완료' : '다음 단계'}
               <Send className="w-4 h-4" />
             </button>
           </div>
