@@ -19,13 +19,19 @@ export default function PostsFilters() {
           style={{ WebkitAppearance: 'none', fontSize: '16px' }}
         />
       </div>
-      <select className="px-4 py-2 border border-gray-300 rounded-lg">
+      <select 
+        className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+        style={{ WebkitAppearance: 'none', fontSize: '16px' }}
+      >
         <option>모든 상태</option>
         <option>작성중</option>
         <option>완료</option>
         <option>발행됨</option>
       </select>
-      <select className="px-4 py-2 border border-gray-300 rounded-lg">
+      <select 
+        className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+        style={{ WebkitAppearance: 'none', fontSize: '16px' }}
+      >
         <option>최신순</option>
         <option>오래된순</option>
       </select>

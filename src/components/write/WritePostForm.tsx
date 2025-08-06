@@ -135,9 +135,11 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 onChange={(e) =>
                   setNewPost((prev) => ({ ...prev, category: e.target.value }))
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900"
+                style={{ WebkitAppearance: 'none', fontSize: '16px' }}
               >
                 <option>춘천</option>
+                <option>강릉</option>
                 <option>서울</option>
                 <option>부산</option>
                 <option>대구</option>
@@ -156,7 +158,8 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                     publishType: e.target.value,
                   }))
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900"
+                style={{ WebkitAppearance: 'none', fontSize: '16px' }}
               >
                 <option>즉시발행</option>
                 <option>예약발행</option>
@@ -214,7 +217,8 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
           <div className="flex gap-3">
             <button
               onClick={() => router.back()}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
+              style={{ fontSize: '16px' }}
             >
               이전 단계
             </button>
