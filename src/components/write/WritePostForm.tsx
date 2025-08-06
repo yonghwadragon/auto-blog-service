@@ -64,7 +64,8 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
 
         {/* 진행 단계 표시 */}
         <div className="mb-8">
-          <div className="flex items-center justify-center mb-6">
+          {/* 데스크톱 버전 */}
+          <div className="hidden md:flex items-center justify-center mb-6">
             <div className="flex items-center space-x-4">
               {[
                 { num: 1, title: '기본 정보', desc: '작성할 주제와\n글 입력하기\n세요' },
@@ -95,6 +96,40 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                     </div>
                   </div>
                   {idx < 3 && <div key={`connector-${idx}`} className="w-16 h-px bg-gray-300 mx-4" />}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 모바일 버전 - 2x2 그리드 */}
+          <div className="md:hidden mb-6">
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { num: 1, title: '기본 정보', desc: '작성할 주제와 글 입력하기 세요' },
+                { num: 2, title: '사진 업로드', desc: '사진과 메모를 추가하세요' },
+                { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그 글을 생성하세요' },
+                { num: 4, title: '미리보기', desc: '작성 결과를 확인하고' }
+              ].map((step, idx) => (
+                <div key={`mobile-step-${step.num}-${idx}`} className="text-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 mx-auto ${
+                      idx === 0
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
+                  >
+                    {step.num}
+                  </div>
+                  <div className={`text-xs font-medium mb-1 ${
+                    idx === 0 ? 'text-green-800' : 'text-gray-600'
+                  }`}>
+                    {step.title}
+                  </div>
+                  <div className={`text-xs leading-tight ${
+                    idx === 0 ? 'text-green-700' : 'text-gray-500'
+                  }`}>
+                    {step.desc}
+                  </div>
                 </div>
               ))}
             </div>
