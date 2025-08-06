@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
+import { getFirebaseErrorMessage } from '@/lib/auth-helpers'
 import { Mail, Lock, User, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
@@ -20,12 +21,85 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+
+  // 이메일 검증
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!email) return '이메일을 입력해주세요.'
+    if (!emailRegex.test(email)) return '올바른 이메일 형식이 아닙니다.'
+    return ''
+  }
+
+  // 비밀번호 검증 (강한 규칙 적용)
+  const validatePassword = (password: string) => {
+    if (!password) return '비밀번호를 입력해주세요.'
+    if (password.length < 8) return '비밀번호는 최소 8자 이상이어야 합니다.'
+    if (!/(?=.*[a-z])/.test(password)) return '소문자를 포함해야 합니다.'
+    if (!/(?=.*[A-Z])/.test(password)) return '대문자를 포함해야 합니다.'
+    if (!/(?=.*\d)/.test(password)) return '숫자를 포함해야 합니다.'
+    if (!/(?=.*[@$!%*?&])/.test(password)) return '특수문자(@$!%*?&)를 포함해야 합니다.'
+    return ''
+  }
+
+  // 비밀번호 확인 검증
+  const validateConfirmPassword = (password: string, confirmPassword: string) => {
+    if (!confirmPassword) return '비밀번호 확인을 입력해주세요.'
+    if (password !== confirmPassword) return '비밀번호가 일치하지 않습니다.'
+    return ''
+  }
+
+  // 실시간 검증
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    
+    let error = ''
+    if (field === 'email') {
+      error = validateEmail(value)
+    } else if (field === 'password') {
+      error = validatePassword(value)
+      // 비밀번호가 변경되면 확인 비밀번호도 다시 검증
+      if (formData.confirmPassword) {
+        setValidationErrors(prev => ({
+          ...prev,
+          confirmPassword: validateConfirmPassword(value, formData.confirmPassword)
+        }))
+      }
+    } else if (field === 'confirmPassword') {
+      error = validateConfirmPassword(formData.password, value)
+    }
+    
+    setValidationErrors(prev => ({ ...prev, [field]: error }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSuccess('')
     setLoading(true)
+
+    // 제출 전 최종 검증
+    const emailError = validateEmail(formData.email)
+    const passwordError = validatePassword(formData.password)
+    let confirmPasswordError = ''
+    
+    if (!isLogin) {
+      confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword)
+    }
+
+    if (emailError || passwordError || confirmPasswordError) {
+      setValidationErrors({
+        email: emailError,
+        password: passwordError,
+        confirmPassword: confirmPasswordError
+      })
+      setLoading(false)
+      return
+    }
 
     try {
       if (isLogin) {
@@ -38,11 +112,6 @@ export default function AuthPage() {
         }, 1000)
       } else {
         // 회원가입
-        if (formData.password !== formData.confirmPassword) {
-          setError('비밀번호가 일치하지 않습니다.')
-          setLoading(false)
-          return
-        }
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
         setUser(userCredential.user)
         setSuccess('회원가입 성공!')
@@ -51,15 +120,23 @@ export default function AuthPage() {
         }, 1000)
       }
     } catch (error: any) {
-      const errorMessages: { [key: string]: string } = {
-        'auth/email-already-in-use': '이미 사용중인 이메일입니다.',
-        'auth/weak-password': '비밀번호가 너무 약합니다. (최소 6자)',
-        'auth/invalid-email': '유효하지 않은 이메일 형식입니다.',
-        'auth/user-not-found': '등록되지 않은 이메일입니다.',
-        'auth/wrong-password': '비밀번호가 틀렸습니다.',
-        'auth/invalid-credential': '이메일 또는 비밀번호가 올바르지 않습니다.'
+      console.error('Firebase Auth Error:', error)
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        customData: error.customData
+      })
+      
+      // 특별한 경우들 처리
+      if (error.code === 'auth/configuration-not-found') {
+        setError('Firebase Authentication이 설정되지 않았습니다. 관리자에게 문의하세요.')
+      } else if (error.code === 'auth/api-key-not-valid') {
+        setError('Firebase API 키가 올바르지 않습니다. 관리자에게 문의하세요.')
+      } else if (error.code === 'auth/operation-not-allowed') {
+        setError('이메일/비밀번호 로그인이 비활성화되어 있습니다. 관리자에게 문의하세요.')
+      } else {
+        setError(getFirebaseErrorMessage(error.code))
       }
-      setError(errorMessages[error.code] || '오류가 발생했습니다. 다시 시도해주세요.')
     } finally {
       setLoading(false)
     }
@@ -116,6 +193,22 @@ export default function AuthPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <style jsx>{`
+              input::placeholder {
+                color: #9ca3af !important;
+                opacity: 1 !important;
+              }
+              input::-webkit-input-placeholder {
+                color: #9ca3af !important;
+              }
+              input::-moz-placeholder {
+                color: #9ca3af !important;
+                opacity: 1 !important;
+              }
+              input:-ms-input-placeholder {
+                color: #9ca3af !important;
+              }
+            `}</style>
             {/* 이메일 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -127,12 +220,27 @@ export default function AuthPage() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                   placeholder="이메일을 입력하세요"
-                  style={{ fontSize: '16px' }}
+                  style={{ 
+                    fontSize: '16px',
+                    WebkitAppearance: 'none',
+                    WebkitBorderRadius: '8px',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
+                  }}
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                 />
               </div>
+              {validationErrors.email && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {validationErrors.email}
+                </p>
+              )}
             </div>
 
             {/* 비밀번호 */}
@@ -140,18 +248,55 @@ export default function AuthPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 비밀번호
               </label>
+              {!isLogin && (
+                <div className="mb-2 text-xs text-gray-500">
+                  <div className="flex flex-wrap gap-1">
+                    <span>비밀번호:</span>
+                    <span className={formData.password.length >= 8 ? 'text-green-600' : 'text-gray-500'}>
+                      8자+
+                    </span>
+                    <span className={/(?=.*[a-z])/.test(formData.password) ? 'text-green-600' : 'text-gray-500'}>
+                      소문자
+                    </span>
+                    <span className={/(?=.*[A-Z])/.test(formData.password) ? 'text-green-600' : 'text-gray-500'}>
+                      대문자
+                    </span>
+                    <span className={/(?=.*\d)/.test(formData.password) ? 'text-green-600' : 'text-gray-500'}>
+                      숫자
+                    </span>
+                    <span className={/(?=.*[@$!%*?&])/.test(formData.password) ? 'text-green-600' : 'text-gray-500'}>
+                      특수문자
+                    </span>
+                  </div>
+                </div>
+              )}
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="password"
                   required
                   value={formData.password}
-                  onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                   placeholder="비밀번호를 입력하세요"
-                  style={{ fontSize: '16px' }}
+                  style={{ 
+                    fontSize: '16px',
+                    WebkitAppearance: 'none',
+                    WebkitBorderRadius: '8px',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
+                  }}
+                  autoComplete="current-password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                 />
               </div>
+              {validationErrors.password && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {validationErrors.password}
+                </p>
+              )}
             </div>
 
             {/* 비밀번호 확인 (회원가입 시만) */}
@@ -166,12 +311,25 @@ export default function AuthPage() {
                     type="password"
                     required
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                     placeholder="비밀번호를 다시 입력하세요"
-                    style={{ fontSize: '16px' }}
+                    style={{ 
+                      fontSize: '16px',
+                      WebkitAppearance: 'none',
+                      WebkitBorderRadius: '8px'
+                    }}
+                    autoComplete="new-password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
                   />
                 </div>
+                {validationErrors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {validationErrors.confirmPassword}
+                  </p>
+                )}
               </div>
             )}
 
@@ -197,6 +355,7 @@ export default function AuthPage() {
                 setError('')
                 setSuccess('')
                 setFormData({ email: '', password: '', confirmPassword: '' })
+                setValidationErrors({ email: '', password: '', confirmPassword: '' })
               }}
               className="text-green-600 hover:text-green-700 font-medium"
             >
