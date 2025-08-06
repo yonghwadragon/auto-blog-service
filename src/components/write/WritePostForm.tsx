@@ -120,7 +120,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                   { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그\n글을 생성하\n세요' },
                   { num: 4, title: '미리보기', desc: '작성 결과를 확인하\n고' }
                 ].map((step, idx) => (
-                  <div key={`step-${step.num}-${idx}`} className="flex items-center">
+                  <div key={`desktop-step-${step.num}`} className="flex items-center">
                     <div className="text-center">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
@@ -142,7 +142,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                         {step.desc}
                       </div>
                     </div>
-                    {idx < 3 && <div key={`connector-${idx}`} className="w-16 h-px bg-gray-300 mx-4" />}
+                    {idx < 3 && <div key={`desktop-connector-${step.num}`} className="w-16 h-px bg-gray-300 mx-4" />}
                   </div>
                 ))}
               </div>
@@ -158,7 +158,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 { num: 3, title: '콘텐츠 생성', desc: 'AI로 블로그 글을 생성하세요' },
                 { num: 4, title: '미리보기', desc: '작성 결과를 확인하고' }
               ].map((step, idx) => (
-                <div key={`mobile-step-${step.num}-${idx}`} className="text-center">
+                <div key={`mobile-step-${step.num}`} className="text-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 mx-auto ${
                       idx === 0
