@@ -458,7 +458,6 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 style={{ WebkitAppearance: 'none', fontSize: '16px' }}
               >
                 <option>즉시발행</option>
-                <option>예약발행</option>
                 <option>임시저장</option>
               </select>
             </div>
