@@ -63,6 +63,14 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle } from 'lucide
         alert('발행 유형을 선택해주세요.')
         return
       }
+      if (!newPost.content.trim()) {
+        alert('내용을 입력해주세요.')
+        return
+      }
+      if (!newPost.selectedNaverAccount.trim()) {
+        alert('네이버 계정을 선택해주세요.')
+        return
+      }
 
       const post = {
         id: Date.now(),
@@ -268,7 +276,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
           {/* 3) 본문 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              내용
+              내용 *
             </label>
             <textarea
               placeholder="AI가 자동으로 생성할 내용을 입력하거나 직접 작성하세요"
@@ -314,7 +322,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-green-800 text-sm font-medium">
-                      네이버 계정 선택 ({connectedAccounts.length}개 등록됨)
+                      네이버 계정 선택 * ({connectedAccounts.length}개 등록됨)
                     </p>
                   </div>
                   <select
@@ -341,7 +349,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
           <div className="flex items-center">
             <input type="checkbox" id="agree" className="mr-2" />
             <label htmlFor="agree" className="text-sm text-gray-600">
-              콘텐츠가 이용약관에 맞춰 제공
+              프렌차이즈 매장입니다
             </label>
           </div>
 
