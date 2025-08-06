@@ -11,7 +11,7 @@ import { FileText, User, Settings, BarChart3, PenTool, Edit3, LogOut, LogIn } fr
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { isAuthenticated, isLoading, logout } = useAuthStore()
+  const { isAuthenticated, isLoading, logout, user } = useAuthStore()
 
   const navItems = [
     { href: '/dashboard', label: '대시보드', icon: BarChart3 },
@@ -37,16 +37,41 @@ export default function Navbar() {
             <div className="bg-green-600 text-white p-2 rounded-lg">
               <FileText className="w-5 h-5" />
             </div>
-            <h1 className="text-xl font-semibold text-gray-900">네이버 블로그 자동화</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Navely</h1>
           </Link>
           <div className="flex items-center gap-4">
             {isLoading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
             ) : isAuthenticated ? (
-              <>
-                <button className="text-gray-600 hover:text-gray-900">
-                  <User className="w-5 h-5" />
-                </button>
+              <div className="flex items-center gap-4">
+                {/* 환영 메시지 */}
+                <div className="hidden sm:flex items-center gap-2 text-gray-700">
+                  <User className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm">
+                    {user?.displayName && (
+                      <span className="text-green-600 font-medium">
+                        {user.displayName}님
+                      </span>
+                    )}
+                    {!user?.displayName && user?.email && (
+                      <span className="text-green-600 font-medium">
+                        {user.email.split('@')[0]}님
+                      </span>
+                    )}
+                    <span className="ml-1">
+                      <span className="font-medium">Navely</span>에 오신 것을 환영합니다!
+                    </span>
+                  </span>
+                </div>
+                
+                {/* 모바일용 간단 표시 */}
+                <div className="sm:hidden flex items-center gap-2 text-gray-700">
+                  <User className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-medium">
+                    {user?.displayName || user?.email?.split('@')[0] || '사용자'}님
+                  </span>
+                </div>
+                
                 <button 
                   onClick={handleLogout}
                   className="text-gray-600 hover:text-gray-900 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -55,7 +80,7 @@ export default function Navbar() {
                   <LogOut className="w-4 h-4" />
                   <span className="text-sm">로그아웃</span>
                 </button>
-              </>
+              </div>
             ) : (
               <Link
                 href="/auth"
