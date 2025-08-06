@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useHydration } from '@/hooks/useHydration'
-import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle } from 'lucide-react'                               
+import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle } from 'lucide-react'                               
 
   export default function WritePostForm() {
     const router = useRouter()
@@ -86,7 +86,7 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle } from 'lucide
     /** Gemini API로 내용 생성(예시) */
     const handleGenerateWithAI = async () => {
       if (!geminiApiKey) {
-        alert('Gemini API 키를 먼저 설정해주세요.')
+        // alert 대신 상태 표시로 처리
         return
       }
       setNewPost((prev) => ({
@@ -292,7 +292,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               spellCheck="false"
               style={{ WebkitAppearance: 'none', fontSize: '16px' }}
             />
-            <div className="mt-2 flex gap-2">
+            <div className="mt-2 flex items-center gap-4">
               <button
                 onClick={handleGenerateWithAI}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
@@ -300,6 +300,19 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 <Settings className="w-4 h-4" />
                 AI로 내용 생성
               </button>
+              
+              {/* API 키 상태 표시 */}
+              {geminiApiKey ? (
+                <div className="flex items-center gap-2 text-green-600">
+                  <CheckCircle className="w-4 h-4" />
+                  <span className="text-sm">사용가능합니다</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-red-600">
+                  <AlertCircle className="w-4 h-4" />
+                  <span className="text-sm">설정에서 API키를 등록해야합니다</span>
+                </div>
+              )}
             </div>
           </div>
 
