@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
 import { useHydration } from '@/hooks/useHydration'
-import { FileText, Plus, Eye, Edit, Trash2, X } from 'lucide-react'
+import { FileText, Plus, Eye, Edit, Trash2, X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function PostsList() {
   const router = useRouter()
@@ -13,9 +13,16 @@ export default function PostsList() {
   const { posts, deletePost } = usePostStore()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
   
   // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
   const safePosts = hydrated && posts ? posts : []
+  
+  const ITEMS_PER_PAGE = 5
+  const totalPages = Math.ceil(safePosts.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const currentPosts = safePosts.slice(startIndex, endIndex)
 
   const handleDeletePost = () => {
     if (deletingPostId !== null) {
@@ -48,7 +55,7 @@ export default function PostsList() {
         <h3 className="font-medium text-gray-900">글 목록</h3>
       </div>
       <div className="divide-y">
-        {safePosts.map(post => (
+        {currentPosts.map(post => (
           <div key={post.id} className="p-4 hover:bg-gray-50">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -86,6 +93,57 @@ export default function PostsList() {
           </div>
         ))}
       </div>
+      
+      {/* 페이지네이션 */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-4 border-t">
+          <div className="text-sm text-gray-600">
+            총 {safePosts.length}개 중 {startIndex + 1}-{Math.min(endIndex, safePosts.length)}개 표시
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className={`p-2 rounded-lg ${
+                currentPage === 1
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            
+            <div className="flex gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 text-sm rounded-lg ${
+                    currentPage === page
+                      ? 'bg-green-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className={`p-2 rounded-lg ${
+                currentPage === totalPages
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+      
       
       {/* 삭제 확인 모달 */}
       {showDeleteModal && (
