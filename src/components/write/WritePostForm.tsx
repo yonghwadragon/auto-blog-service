@@ -488,7 +488,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
               >
                 <Settings className="w-4 h-4" />
-                AI로 내용 생성
+<span className="whitespace-nowrap">AI로 내용 생성</span>
               </button>
               
               {/* API 키 상태 표시 */}
@@ -500,7 +500,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               ) : (
                 <div className="flex items-center gap-2 text-red-600">
                   <AlertCircle className="w-4 h-4" />
-                  <span className="text-sm">설정에서 API키를 등록해야합니다</span>
+                  <span className="text-sm whitespace-nowrap">설정 API키 등록 필요</span>
                 </div>
               )}
             </div>
@@ -560,36 +560,36 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
           )}
 
           {/* 네비게이션 버튼 */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
             {currentStep > 1 ? (
               <button
                 onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))}
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
+                className="px-4 sm:px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
                 style={{ fontSize: '16px' }}
               >
-                이전 단계
+<span className="whitespace-nowrap">이전 단계</span>
               </button>
             ) : (
               <button
                 onClick={() => router.back()}
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
+                className="px-4 sm:px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-900"
                 style={{ fontSize: '16px' }}
               >
-                이전
+<span className="whitespace-nowrap">이전</span>
               </button>
             )}
             <button
               onClick={handleSavePost}
-              className="px-6 py-3 border border-blue-300 rounded-lg hover:bg-blue-50 bg-white text-blue-600"
+              className="px-4 sm:px-6 py-3 border border-blue-300 rounded-lg hover:bg-blue-50 bg-white text-blue-600"
               style={{ fontSize: '16px' }}
             >
-              임시저장
+<span className="whitespace-nowrap">임시저장</span>
             </button>
             <button
               onClick={handleNextStep}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 flex items-center gap-2"
+              className="bg-green-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
             >
-              {currentStep === 4 ? '완료' : '다음 단계'}
+<span className="whitespace-nowrap">{currentStep === 4 ? '완료' : '다음 단계'}</span>
               <Send className="w-4 h-4" />
             </button>
           </div>
@@ -599,7 +599,7 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             <div className="fixed top-4 right-4 z-50 animate-in fade-in duration-300">
               <div className="bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3">
                 <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">임시저장되었습니다</span>
+                <span className="font-medium whitespace-nowrap">임시저장되었습니다</span>
               </div>
             </div>
           )}

@@ -137,7 +137,7 @@ export default function NaverAccountSettings() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">확인</span>
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs whitespace-nowrap">확인</span>
                     <button 
                       onClick={() => handleOpenModal(true, account.id)}
                       className="p-1 text-gray-400 hover:text-gray-600"

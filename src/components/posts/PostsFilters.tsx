@@ -4,13 +4,20 @@
 import { Search } from 'lucide-react'
 
 export default function PostsFilters() {
+  const getPlaceholder = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      return "검색"
+    }
+    return "작성명이나 제목으로 검색"
+  }
+
   return (
     <div className="flex gap-4 items-center">
       <div className="relative flex-1 max-w-md">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
         <input
           type="text"
-          placeholder="작성명이나 제목으로 검색"
+          placeholder={getPlaceholder()}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500"
           autoCapitalize="none"
           autoCorrect="off"

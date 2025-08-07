@@ -26,14 +26,14 @@ export default function PostsHeader() {
           className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2"
         >
           <RefreshCw className="w-4 h-4" />
-          새로고침
+          <span className="whitespace-nowrap">새로고침</span>
         </button>
         <button 
           onClick={() => router.push('/write')}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          새 글 쓰기
+          <span className="whitespace-nowrap">새 글 쓰기</span>
         </button>
       </div>
     </div>

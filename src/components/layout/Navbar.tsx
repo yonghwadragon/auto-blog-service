@@ -66,8 +66,8 @@ export default function Navbar() {
                 
                 {/* 모바일용 간단 표시 */}
                 <div className="sm:hidden flex items-center gap-2 text-gray-700">
-                  <User className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-medium">
+                  <User className="w-4 h-4 text-gray-600" />
+                  <span className="text-xs font-medium whitespace-nowrap">
                     {user?.displayName || user?.email?.split('@')[0] || '사용자'}님
                   </span>
                 </div>
@@ -78,7 +78,7 @@ export default function Navbar() {
                   title="로그아웃"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="text-sm">로그아웃</span>
+                  <span className="text-sm whitespace-nowrap">로그아웃</span>
                 </button>
               </div>
             ) : (
@@ -95,21 +95,22 @@ export default function Navbar() {
       </div>
       
       <div className="px-6">
-        <nav className="flex space-x-2">
+        <nav className="flex space-x-2 overflow-x-auto">
           {navItems.map((item) => {
             const Icon = item.icon
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200 no-underline ${
+                className={`px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200 no-underline whitespace-nowrap ${
                   pathname === item.href
                     ? 'bg-green-100 text-green-700'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                {item.label}
+                <span className="sm:inline hidden">{item.label}</span>
+                <span className="sm:hidden inline text-xs">{item.label}</span>
               </Link>
             )
           })}

@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="bg-white border-t mt-12">
       <div className="px-6 py-8">
         <div className="text-center text-gray-600">
-          <p>© 2024 네이버 블로그 자동화. 맛집 블로거를 위한 AI 도구.</p>
+          <p className="text-sm sm:text-base">© 2024 <span className="whitespace-nowrap">Navely. 맛집 블로거를 위한 AI 도구.</span></p>
         </div>
       </div>
     </footer>
