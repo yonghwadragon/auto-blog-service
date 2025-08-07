@@ -44,8 +44,8 @@ export default function Navbar() {
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
             ) : isAuthenticated ? (
               <div className="flex items-center gap-4">
-                {/* 환영 메시지 */}
-                <div className="hidden sm:flex items-center gap-2 text-gray-700">
+                {/* 환영 메시지 - 클릭 시 사용자 정보로 이동 */}
+                <Link href="/settings" className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors cursor-pointer">
                   <User className="w-5 h-5 text-gray-600" />
                   <span className="text-sm">
                     {user?.displayName && (
@@ -62,15 +62,15 @@ export default function Navbar() {
                       <span className="font-medium">Navely</span>에 오신 것을 환영합니다!
                     </span>
                   </span>
-                </div>
+                </Link>
                 
-                {/* 모바일용 간단 표시 */}
-                <div className="sm:hidden flex items-center gap-2 text-gray-700">
+                {/* 모바일용 간단 표시 - 클릭 시 사용자 정보로 이동 */}
+                <Link href="/settings" className="sm:hidden flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors cursor-pointer">
                   <User className="w-4 h-4 text-gray-600" />
                   <span className="text-xs font-medium whitespace-nowrap">
                     {user?.displayName || user?.email?.split('@')[0] || '사용자'}님
                   </span>
-                </div>
+                </Link>
                 
                 <button 
                   onClick={handleLogout}
