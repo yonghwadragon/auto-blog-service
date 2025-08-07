@@ -3,11 +3,21 @@
 
 import { useRouter } from 'next/navigation'
 import { usePostStore } from '@/store/postStore'
+import { useHydration } from '@/hooks/useHydration'
 import { FileText, RefreshCw } from 'lucide-react'
 
 export default function RecentPosts() {
   const router = useRouter()
+  const hydrated = useHydration()
   const { posts } = usePostStore()
+  
+  // hydration이 완료되지 않았거나 posts가 없으면 빈 배열 사용
+  const safePosts = hydrated && posts ? posts : []
+  
+  // 최신순으로 정렬한 후 3개만 선택
+  const recentPosts = safePosts
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 3)
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm border">
@@ -15,18 +25,18 @@ export default function RecentPosts() {
         <h2 className="text-lg font-semibold text-gray-900">최근 작성한 글</h2>
         <button 
           className="text-green-600 hover:text-green-700 flex items-center gap-1"
-          onClick={() => router.push('/posts')}
+          onClick={() => window.location.reload()}
         >
           <RefreshCw className="w-4 h-4" />
           새로고침
         </button>
       </div>
       
-      {posts.length === 0 ? (
+      {safePosts.length === 0 ? (
         <div className="text-center py-8">
           <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 mb-4">아직 작성한 글이 없습니다</p>
-          <p className="text-gray-400 text-sm">첫 번째 맞춤 글을 시도 작성해보세요!</p>
+          <p className="text-gray-400 text-sm">첫 번째 맛집 글을 AI로 작성해보세요!</p>
           <button 
             className="bg-green-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-green-700"
             onClick={() => router.push('/write')}
@@ -36,7 +46,7 @@ export default function RecentPosts() {
         </div>
       ) : (
         <div className="space-y-3">
-          {posts.slice(0, 3).map(post => (
+          {recentPosts.map(post => (
             <div key={post.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
                 <h3 className="font-medium text-gray-900">{post.title}</h3>

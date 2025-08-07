@@ -5,18 +5,24 @@
 
 import { useState } from 'react'
 import { useSettingsStore } from '@/store/settingsStore'
-import { Settings, Eye, EyeOff } from 'lucide-react'
+import { Settings, Eye, EyeOff, CheckCircle } from 'lucide-react'
 
 export default function GeminiSettings() {
   const { geminiApiKey, setGeminiApiKey } = useSettingsStore()
   const [showKey, setShowKey] = useState(false) // 👀 키 표시 토글 상태
+  const [showTempSuccess, setShowTempSuccess] = useState(false) // 3초 후 사라지는 메시지
+  const [showPermanentSuccess, setShowPermanentSuccess] = useState(false) // 계속 표시되는 메시지
 
   /** API 키 저장 */
   const handleSaveApiKey = () => {
     if (geminiApiKey.trim()) {
-      alert('API 키가 저장되었습니다!')
+      setShowTempSuccess(true)
+      setShowPermanentSuccess(true)
+      // 3초 후 임시 메시지만 숨기기
+      setTimeout(() => setShowTempSuccess(false), 3000)
     } else {
       alert('API 키를 입력해주세요.')
+      setShowPermanentSuccess(false)
     }
   }
 
@@ -42,6 +48,14 @@ export default function GeminiSettings() {
         </ol>
       </div>
 
+      {/* 성공 메시지 - 라벨 위쪽 (3초 후 사라짐) */}
+      {showTempSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 flex items-center gap-2">
+          <CheckCircle className="w-5 h-5 text-green-600" />
+          <span className="text-green-800 font-medium">API 키가 성공적으로 저장되었습니다.</span>
+        </div>
+      )}
+
       {/* 입력 영역 */}
       <div className="space-y-4">
         <div>
@@ -54,12 +68,18 @@ export default function GeminiSettings() {
               placeholder="AIzaSy..."
               value={geminiApiKey}
               onChange={(e) => setGeminiApiKey(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck="false"
+              inputMode="text"
+              style={{ WebkitAppearance: 'none', fontSize: '16px' }}
             />
             <button
               type="button"
               onClick={() => setShowKey((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded touch-manipulation"
             >
               {showKey ? (
                 <EyeOff className="w-5 h-5" />
@@ -72,10 +92,20 @@ export default function GeminiSettings() {
 
         <button
           onClick={handleSaveApiKey}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-base font-medium touch-manipulation w-full sm:w-auto"
         >
           API 키 저장
         </button>
+
+        {/* 성공 메시지 - 버튼 아래쪽 (계속 표시) */}
+        {showPermanentSuccess && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <span className="text-green-800">
+              API 키가 설정되어 있습니다. 이제 AI 콘텐츠 생성 기능을 사용할 수 있습니다.
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )

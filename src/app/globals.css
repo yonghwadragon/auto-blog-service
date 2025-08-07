@@ -35,7 +35,7 @@ body {
 @layer base {
   /* 링크(앵커) 기본값: 밑줄 제거, 색상 상속 */
   a {
-    @apply text-inherit no-underline hover:underline;
+    @apply text-inherit no-underline;
     transition: color 0.2s;
   }
 
