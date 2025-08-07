@@ -4,14 +4,15 @@
 import { useState } from 'react'
 import GeminiSettings from './GeminiSettings'
 import NaverAccountSettings from './NaverAccountSettings'
+import UserProfile from './UserProfile'
 
 export default function SettingsTabs() {
-  const [activeTab, setActiveTab] = useState('gemini')
+  const [activeTab, setActiveTab] = useState('profile')
 
   const tabs = [
+    { id: 'profile', label: '사용자 정보' },
     { id: 'gemini', label: 'Gemini API' },
     { id: 'naver', label: '네이버 계정' },
-    { id: 'general', label: '기본 설정' },
   ]
 
   return (
@@ -33,14 +34,9 @@ export default function SettingsTabs() {
       </div>
 
       <div className="mt-6">
+        {activeTab === 'profile' && <UserProfile />}
         {activeTab === 'gemini' && <GeminiSettings />}
         {activeTab === 'naver' && <NaverAccountSettings />}
-        {activeTab === 'general' && (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4">기본 설정</h3>
-            <p className="text-gray-600">기본 설정 옵션들이 여기에 표시됩니다.</p>
-          </div>
-        )}
       </div>
     </>
   )
