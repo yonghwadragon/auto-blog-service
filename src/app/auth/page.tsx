@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from 'firebase/auth'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, getRedirectResult, sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
 import { getFirebaseErrorMessage } from '@/lib/auth-helpers'
@@ -21,6 +21,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [resetEmailSent, setResetEmailSent] = useState(false)
   const [validationErrors, setValidationErrors] = useState({
     email: '',
     password: '',
@@ -143,6 +144,34 @@ export default function AuthPage() {
       if (!shouldUseRedirect()) {
         setLoading(false)
       }
+    }
+  }
+
+  // 비밀번호 재설정 처리
+  const handlePasswordReset = async () => {
+    if (!formData.email) {
+      setError('비밀번호 재설정을 위해 이메일을 먼저 입력해주세요.')
+      return
+    }
+
+    const emailError = validateEmail(formData.email)
+    if (emailError) {
+      setValidationErrors(prev => ({ ...prev, email: emailError }))
+      setError('올바른 이메일 주소를 입력해주세요.')
+      return
+    }
+
+    try {
+      setLoading(true)
+      setError('')
+      await sendPasswordResetEmail(auth, formData.email)
+      setResetEmailSent(true)
+      setSuccess(`${formData.email}로 비밀번호 재설정 이메일을 보냈습니다. 이메일을 확인해주세요.`)
+    } catch (error: any) {
+      console.error('Password Reset Error:', error)
+      setError(getFirebaseErrorMessage(error.code))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -481,6 +510,7 @@ export default function AuthPage() {
                 setIsLogin(!isLogin)
                 setError('')
                 setSuccess('')
+                setResetEmailSent(false)
                 setFormData({ email: '', password: '', confirmPassword: '' })
                 setValidationErrors({ email: '', password: '', confirmPassword: '' })
               }}
@@ -489,6 +519,21 @@ export default function AuthPage() {
               {isLogin ? '계정이 없으신가요? 회원가입' : '이미 계정이 있으신가요? 로그인'}
             </button>
           </div>
+
+          {/* 비밀번호 재설정 (로그인 시에만 표시) */}
+          {isLogin && (
+            <div className="mt-3 text-center">
+              <button
+                onClick={handlePasswordReset}
+                disabled={loading}
+                className={`text-sm text-gray-600 hover:text-gray-800 underline ${
+                  loading ? 'cursor-not-allowed opacity-50' : ''
+                }`}
+              >
+                {resetEmailSent ? '재설정 이메일 다시 보내기' : '비밀번호를 잊으셨나요?'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
