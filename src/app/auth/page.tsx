@@ -243,8 +243,17 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {isLogin ? '로그인' : '회원가입'}
             </h2>
-            <p className="text-gray-600 text-sm sm:text-base px-2">
-              {isLogin ? '계정에 로그인하여 블로그 자동화를 시작하세요' : '새 계정을 만들어 시작하세요'}
+            <p className="text-gray-600 px-2">
+              <span className="text-sm sm:text-base">
+                {isLogin ? 'Navely에 로그인하여' : '새 계정을 만들어 시작하세요'}
+              </span>
+              <br className="sm:hidden" />
+              <span className="text-xs sm:text-base sm:hidden">
+                {isLogin ? '블로그 자동화를 시작하세요' : ''}
+              </span>
+              <span className="hidden sm:inline">
+                {isLogin ? ' 블로그 자동화를 시작하세요' : ''}
+              </span>
             </p>
           </div>
 
@@ -295,7 +304,7 @@ export default function AuthPage() {
                   className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                   placeholder="이메일을 입력하세요"
                   style={{ 
-                    fontSize: '16px',
+                    fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '14px' : '16px',
                     WebkitAppearance: 'none',
                     WebkitBorderRadius: '8px',
                     color: '#111827',
@@ -351,7 +360,7 @@ export default function AuthPage() {
                   className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                   placeholder="비밀번호를 입력하세요"
                   style={{ 
-                    fontSize: '16px',
+                    fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '14px' : '16px',
                     WebkitAppearance: 'none',
                     WebkitBorderRadius: '8px',
                     color: '#111827',
@@ -386,7 +395,7 @@ export default function AuthPage() {
                     className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
                     placeholder="비밀번호를 다시 입력하세요"
                     style={{ 
-                      fontSize: '16px',
+                      fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '14px' : '16px',
                       WebkitAppearance: 'none',
                       WebkitBorderRadius: '8px'
                     }}
