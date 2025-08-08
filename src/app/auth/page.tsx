@@ -78,11 +78,12 @@ export default function AuthPage() {
 
   // 모바일 또는 배포 환경 감지 함수
   const shouldUseRedirect = () => {
+    // 임시로 모든 환경에서 팝업 방식 사용 (리다이렉트 URI 설정 문제 해결을 위해)
     // 배포 환경에서는 항상 리다이렉트 사용 (COOP 정책 때문)
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      return true
-    }
-    // 모바일 기기 감지
+    // if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    //   return true
+    // }
+    // 모바일 기기에서만 리다이렉트 사용
     return typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   }
 
