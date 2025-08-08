@@ -277,16 +277,34 @@ export default function AuthPage() {
               input::placeholder {
                 color: #9ca3af !important;
                 opacity: 1 !important;
+                font-size: 14px !important;
               }
               input::-webkit-input-placeholder {
                 color: #9ca3af !important;
+                font-size: 14px !important;
               }
               input::-moz-placeholder {
                 color: #9ca3af !important;
                 opacity: 1 !important;
+                font-size: 14px !important;
               }
               input:-ms-input-placeholder {
                 color: #9ca3af !important;
+                font-size: 14px !important;
+              }
+              @media (min-width: 640px) {
+                input::placeholder {
+                  font-size: 16px !important;
+                }
+                input::-webkit-input-placeholder {
+                  font-size: 16px !important;
+                }
+                input::-moz-placeholder {
+                  font-size: 16px !important;
+                }
+                input:-ms-input-placeholder {
+                  font-size: 16px !important;
+                }
               }
             `}</style>
             {/* 이메일 */}
