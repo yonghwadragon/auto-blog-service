@@ -226,7 +226,7 @@ export default function AuthPage() {
             </Link>
             <Link
               href="/dashboard"
-              className="text-gray-600 hover:text-gray-900 flex items-center gap-2"
+              className="text-gray-600 hover:text-gray-900 flex items-center gap-2 whitespace-nowrap"
             >
               <ArrowLeft className="w-4 h-4" />
               대시보드로 돌아가기
