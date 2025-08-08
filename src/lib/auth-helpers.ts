@@ -79,6 +79,9 @@ export const getFirebaseErrorMessage = (errorCode: string): string => {
     'auth/operation-not-allowed': '이 로그인 방법은 허용되지 않습니다.',
     'auth/invalid-verification-code': '인증 코드가 올바르지 않습니다.',
     'auth/invalid-verification-id': '인증 ID가 올바르지 않습니다.',
+    'auth/requires-recent-login': '보안을 위해 다시 로그인해주세요.',
+    'auth/popup-closed-by-user': '인증 팝업이 닫혔습니다.',
+    'auth/popup-blocked': '팝업이 차단되었습니다. 브라우저 설정을 확인해주세요.',
   }
   
   return errorMessages[errorCode] || '알 수 없는 오류가 발생했습니다.'

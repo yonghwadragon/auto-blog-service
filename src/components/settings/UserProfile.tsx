@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth'
+import { updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser, GoogleAuthProvider, reauthenticateWithPopup, reauthenticateWithRedirect, getRedirectResult } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuthStore } from '@/store/authStore'
 import { useHydration } from '@/hooks/useHydration'
@@ -42,6 +42,29 @@ export default function UserProfile() {
       setNewDisplayName(user.email.split('@')[0])
     }
   }, [user])
+
+  // Google 재인증 리다이렉트 결과 처리
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      if (!hydrated) return
+      
+      try {
+        const result = await getRedirectResult(auth)
+        if (result && result.user && isDeletingAccount) {
+          // 재인증 성공 후 계정 삭제 재시도
+          await deleteUser(result.user)
+          logout()
+          router.push('/auth')
+        }
+      } catch (error: any) {
+        console.error('리다이렉트 결과 처리 오류:', error)
+        setDeleteError(getFirebaseErrorMessage(error.code))
+        setIsDeletingAccount(false)
+      }
+    }
+
+    handleRedirectResult()
+  }, [hydrated, isDeletingAccount, logout, router])
 
   // hydration이 완료되지 않았으면 로딩 표시
   if (!hydrated) {
@@ -151,6 +174,38 @@ export default function UserProfile() {
     }
   }
 
+  // 모바일 감지 함수
+  const isMobile = () => {
+    return typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }
+
+  // Google 사용자 재인증
+  const reauthenticateGoogleUser = async () => {
+    if (!auth.currentUser) return false
+
+    try {
+      const provider = new GoogleAuthProvider()
+      
+      if (isMobile()) {
+        // 모바일에서는 리다이렉트 방식
+        await reauthenticateWithRedirect(auth.currentUser, provider)
+        return true // 리다이렉트 후 페이지가 새로고침되므로
+      } else {
+        // 데스크톱에서는 팝업 방식
+        await reauthenticateWithPopup(auth.currentUser, provider)
+        return true
+      }
+    } catch (error: any) {
+      console.error('Google 재인증 오류:', error)
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('재인증이 취소되었습니다.')
+      } else if (error.code === 'auth/popup-blocked') {
+        throw new Error('팝업이 차단되었습니다. 브라우저 설정을 확인해주세요.')
+      }
+      throw error
+    }
+  }
+
   // 계정 탈퇴
   const handleDeleteAccount = async () => {
     if (!auth.currentUser) return
@@ -165,8 +220,12 @@ export default function UserProfile() {
 
     setIsDeletingAccount(true)
     try {
-      // 이메일 로그인 사용자만 재인증 필요
-      if (!isGoogleUser && user?.email) {
+      // 재인증 수행
+      if (isGoogleUser) {
+        // Google 사용자 재인증
+        await reauthenticateGoogleUser()
+      } else if (user?.email) {
+        // 이메일 사용자 재인증
         const credential = EmailAuthProvider.credential(user.email, deleteConfirmPassword)
         await reauthenticateWithCredential(auth.currentUser, credential)
       }
@@ -181,7 +240,11 @@ export default function UserProfile() {
       router.push('/auth')
     } catch (error: any) {
       console.error('계정 삭제 오류:', error)
-      setDeleteError(getFirebaseErrorMessage(error.code))
+      if (error.message) {
+        setDeleteError(error.message)
+      } else {
+        setDeleteError(getFirebaseErrorMessage(error.code))
+      }
     } finally {
       setIsDeletingAccount(false)
     }
@@ -429,6 +492,11 @@ export default function UserProfile() {
               <div className="mb-4">
                 <h5 className="font-medium text-red-900 mb-2">정말로 계정을 탈퇴하시겠습니까?</h5>
                 <p className="text-red-800 text-sm">이 작업은 되돌릴 수 없습니다. 모든 데이터가 삭제됩니다.</p>
+                {isGoogleUser && (
+                  <p className="text-red-700 text-xs mt-2 bg-red-100 p-2 rounded">
+                    💡 Google 계정 사용자는 보안을 위해 재인증이 필요합니다. 계속하면 Google 로그인 창이 표시됩니다.
+                  </p>
+                )}
               </div>
 
               {deleteError && (
@@ -459,7 +527,7 @@ export default function UserProfile() {
                   disabled={isDeletingAccount || (!isGoogleUser && !deleteConfirmPassword)}
                   className="flex-1 py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
-                  {isDeletingAccount ? '탈퇴 처리 중...' : '계정 탈퇴 확인'}
+                  {isDeletingAccount ? '탈퇴 처리 중...' : (isGoogleUser ? 'Google 재인증 후 탈퇴' : '계정 탈퇴 확인')}
                 </button>
                 <button
                   onClick={() => {
