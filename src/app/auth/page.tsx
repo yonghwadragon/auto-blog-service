@@ -216,20 +216,21 @@ export default function AuthPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 헤더 */}
       <div className="bg-white shadow-sm border-b">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
-              <div className="bg-green-600 text-white p-2 rounded-lg">
-                <User className="w-5 h-5" />
+        <div className="px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/dashboard" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity min-w-0 flex-1">
+              <div className="bg-green-600 text-white p-1.5 sm:p-2 rounded-lg flex-shrink-0">
+                <User className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">네이버 블로그 자동화</h1>
+              <h1 className="text-base sm:text-xl font-semibold text-gray-900 whitespace-nowrap truncate">네이버 블로그 자동화</h1>
             </Link>
             <Link
               href="/dashboard"
-              className="text-gray-600 hover:text-gray-900 flex items-center gap-2 whitespace-nowrap"
+              className="text-gray-600 hover:text-gray-900 flex items-center gap-1 sm:gap-2 whitespace-nowrap text-sm sm:text-base flex-shrink-0"
             >
-              <ArrowLeft className="w-4 h-4" />
-              대시보드로 돌아가기
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">대시보드로 돌아가기</span>
+              <span className="sm:hidden">돌아가기</span>
             </Link>
           </div>
         </div>
@@ -242,7 +243,7 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {isLogin ? '로그인' : '회원가입'}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base px-2">
               {isLogin ? '계정에 로그인하여 블로그 자동화를 시작하세요' : '새 계정을 만들어 시작하세요'}
             </p>
           </div>
