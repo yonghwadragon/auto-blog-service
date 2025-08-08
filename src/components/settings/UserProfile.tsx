@@ -174,8 +174,13 @@ export default function UserProfile() {
     }
   }
 
-  // 모바일 감지 함수
-  const isMobile = () => {
+  // 모바일 또는 배포 환경 감지 함수
+  const shouldUseRedirect = () => {
+    // 배포 환경에서는 항상 리다이렉트 사용 (COOP 정책 때문)
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      return true
+    }
+    // 모바일 기기 감지
     return typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   }
 
@@ -186,12 +191,12 @@ export default function UserProfile() {
     try {
       const provider = new GoogleAuthProvider()
       
-      if (isMobile()) {
-        // 모바일에서는 리다이렉트 방식
+      if (shouldUseRedirect()) {
+        // 배포 환경 및 모바일에서는 리다이렉트 방식
         await reauthenticateWithRedirect(auth.currentUser, provider)
         return true // 리다이렉트 후 페이지가 새로고침되므로
       } else {
-        // 데스크톱에서는 팝업 방식
+        // 로컬 개발 환경 데스크톱에서만 팝업 방식
         await reauthenticateWithPopup(auth.currentUser, provider)
         return true
       }

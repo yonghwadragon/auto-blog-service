@@ -76,9 +76,14 @@ export default function AuthPage() {
     setValidationErrors(prev => ({ ...prev, [field]: error }))
   }
 
-  // 모바일 감지 함수
-  const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  // 모바일 또는 배포 환경 감지 함수
+  const shouldUseRedirect = () => {
+    // 배포 환경에서는 항상 리다이렉트 사용 (COOP 정책 때문)
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      return true
+    }
+    // 모바일 기기 감지
+    return typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   }
 
   // 페이지 로드 시 리다이렉트 결과 확인
@@ -110,12 +115,12 @@ export default function AuthPage() {
     try {
       const provider = new GoogleAuthProvider()
       
-      if (isMobile()) {
-        // 모바일에서는 리다이렉트 방식 사용
+      if (shouldUseRedirect()) {
+        // 배포 환경 및 모바일에서는 리다이렉트 방식 사용
         await signInWithRedirect(auth, provider)
         // 리다이렉트는 페이지를 새로고침하므로 여기서는 처리하지 않음
       } else {
-        // 데스크톱에서는 팝업 방식 사용
+        // 로컬 개발 환경 데스크톱에서만 팝업 방식 사용
         const userCredential = await signInWithPopup(auth, provider)
         setUser(userCredential.user)
         setSuccess('Google 로그인 성공!')
@@ -133,8 +138,8 @@ export default function AuthPage() {
         setError(getFirebaseErrorMessage(error.code))
       }
     } finally {
-      // 모바일에서 리다이렉트가 아닌 경우에만 로딩 해제
-      if (!isMobile()) {
+      // 리다이렉트 방식이 아닌 경우에만 로딩 해제
+      if (!shouldUseRedirect()) {
         setLoading(false)
       }
     }
