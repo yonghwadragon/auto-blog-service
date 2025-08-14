@@ -38,6 +38,162 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle, 
     }>>([])
     const [isDragOver, setIsDragOver] = useState(false)
 
+    // Python 스크립트 실행 상태
+    const [isRunningScript, setIsRunningScript] = useState(false)
+    const [scriptMessage, setScriptMessage] = useState('')
+    const [progress, setProgress] = useState(0)
+    const [taskId, setTaskId] = useState('')
+    const [errorDetails, setErrorDetails] = useState('')
+
+    /** 작업 상태 폴링 */
+    const pollTaskStatus = async (taskId: string) => {
+      const maxAttempts = 120 // 2분 동안 폴링
+      let attempts = 0
+      
+      const poll = async () => {
+        attempts++
+        
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_SERVER_URL || 'https://naver-blog-server.onrender.com'}/api/blog/task/${taskId}`)
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+          
+          const data = await response.json()
+          
+          // 진행률 업데이트
+          setProgress(data.progress || 0)
+          
+          // 상태별 메시지 설정
+          if (data.status === 'pending') {
+            setScriptMessage('작업 대기 중...')
+          } else if (data.status === 'in_progress') {
+            setScriptMessage('네이버 블로그 포스팅 진행 중...')
+          } else if (data.status === 'completed') {
+            setScriptMessage('네이버 블로그 포스팅 완료!')
+            setProgress(100)
+            
+            // 포스트를 완료 상태로 저장
+            const post = {
+              id: Date.now(),
+              ...newPost,
+              status: 'published' as const,
+              createdAt: new Date().toISOString(),
+              image: null,
+            }
+            addPost(post)
+            
+            // 3초 후 포스트 목록으로 이동
+            setTimeout(() => {
+              router.push('/posts')
+            }, 3000)
+            
+            setIsRunningScript(false)
+            return
+          } else if (data.status === 'failed') {
+            setScriptMessage('포스팅 실패')
+            setErrorDetails(data.error || '알 수 없는 오류가 발생했습니다.')
+            setProgress(0)
+            setIsRunningScript(false)
+            return
+          }
+          
+          // 최대 시도 횟수 체크
+          if (attempts >= maxAttempts) {
+            setScriptMessage('작업 시간 초과')
+            setErrorDetails('작업이 너무 오래 걸리고 있습니다. 다시 시도해주세요.')
+            setIsRunningScript(false)
+            return
+          }
+          
+          // 1초 후 다시 폴링
+          setTimeout(poll, 1000)
+          
+        } catch (error) {
+          console.error('폴링 오류:', error)
+          
+          if (attempts >= maxAttempts) {
+            setScriptMessage('연결 오류')
+            setErrorDetails('서버와의 연결에 문제가 발생했습니다.')
+            setIsRunningScript(false)
+            return
+          }
+          
+          // 오류 시 2초 후 재시도
+          setTimeout(poll, 2000)
+        }
+      }
+      
+      poll()
+    }
+
+    /** Python 스크립트 실행 */
+    const handleRunPythonScript = async () => {
+      setIsRunningScript(true)
+      setScriptMessage('작업 시작 중...')
+      setProgress(0)
+      setErrorDetails('')
+      
+      // 선택된 네이버 계정 정보 가져오기
+      const selectedAccount = naverAccounts.find(account => account.id === newPost.selectedNaverAccount)
+      
+      if (!selectedAccount) {
+        setScriptMessage('네이버 계정을 찾을 수 없습니다')
+        setErrorDetails('선택된 네이버 계정 정보가 올바르지 않습니다.')
+        setIsRunningScript(false)
+        return
+      }
+      
+      if (!selectedAccount.email) {
+        setScriptMessage('계정 정보 부족')
+        setErrorDetails('네이버 계정 정보가 선택되지 않았습니다.')
+        setIsRunningScript(false)
+        return
+      }
+      
+      try {
+        const response = await fetch('/api/run-python-script', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            postData: {
+              title: newPost.tags, // tags가 실제 블로그 제목
+              content: newPost.content,
+              category: newPost.category,
+              tags: newPost.tags
+            },
+            naverAccount: {
+              id: selectedAccount.email
+              // No password needed for manual login
+            }
+          })
+        })
+
+        const result = await response.json()
+        
+        if (result.task_id) {
+          // 작업 ID 저장하고 폴링 시작
+          setTaskId(result.task_id)
+          setScriptMessage('작업이 시작되었습니다')
+          setProgress(5)
+          
+          // 상태 폴링 시작
+          pollTaskStatus(result.task_id)
+        } else {
+          throw new Error(result.message || '작업 생성에 실패했습니다')
+        }
+        
+      } catch (error) {
+        console.error('API 호출 실패:', error)
+        setScriptMessage('요청 실패')
+        setErrorDetails(`서버와의 통신 중 오류가 발생했습니다.\n오류: ${error instanceof Error ? error.message : String(error)}`)
+        setIsRunningScript(false)
+      }
+    }
+
     /** 임시저장 */
     const handleSavePost = () => {
       const post = {
@@ -83,7 +239,7 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle, 
       }
       
       if (currentStep === 4) {
-        // 마지막 단계에서 모든 필드 검증 후 완료
+        // 마지막 단계에서 모든 필드 검증 후 Python 스크립트 실행
         if (!newPost.content.trim()) {
           alert('내용을 입력해주세요.')
           return
@@ -92,16 +248,9 @@ import { Send, Settings, FileText, PenTool, Zap, Eye, CheckCircle, AlertCircle, 
           alert('네이버 계정을 선택해주세요.')
           return
         }
-
-        const post = {
-          id: Date.now(),
-          ...newPost,
-          status: 'completed' as const,
-          createdAt: new Date().toISOString(),
-          image: null,
-        }
-        addPost(post)
-        router.push('/posts')
+        
+        // Python 스크립트 실행
+        handleRunPythonScript()
         return
       }
       
@@ -587,9 +736,19 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
             </button>
             <button
               onClick={handleNextStep}
-              className="bg-green-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+              disabled={isRunningScript}
+              className={`${
+                isRunningScript 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-green-600 hover:bg-green-700'
+              } text-white px-4 sm:px-6 py-3 rounded-lg flex items-center justify-center gap-2`}
             >
-<span className="whitespace-nowrap">{currentStep === 4 ? '완료' : '다음 단계'}</span>
+              <span className="whitespace-nowrap">
+                {isRunningScript 
+                  ? '포스팅 중...' 
+                  : (currentStep === 4 ? '완료' : '다음 단계')
+                }
+              </span>
               <Send className="w-4 h-4" />
             </button>
           </div>
@@ -600,6 +759,96 @@ ${prev.title}에 대한 흥미로운 내용을 작성했습니다. 이는 실제
               <div className="bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3">
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-medium whitespace-nowrap">임시저장되었습니다</span>
+              </div>
+            </div>
+          )}
+
+          {/* 개선된 진행률 표시 모달 */}
+          {scriptMessage && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+                <div className="p-6">
+                  {/* 제목 */}
+                  <div className="flex items-center gap-3 mb-4">
+                    {scriptMessage.includes('완료') ? (
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    ) : scriptMessage.includes('실패') || errorDetails ? (
+                      <AlertCircle className="w-6 h-6 text-red-600" />
+                    ) : (
+                      <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                    )}
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {scriptMessage.includes('완료') ? '포스팅 완료' : 
+                       scriptMessage.includes('실패') || errorDetails ? '포스팅 실패' : '네이버 블로그 포스팅'}
+                    </h3>
+                  </div>
+
+                  {/* 상태 메시지 */}
+                  <p className="text-gray-600 mb-4">{scriptMessage}</p>
+
+                  {/* 진행률 바 */}
+                  {isRunningScript && !errorDetails && (
+                    <div className="mb-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm text-gray-500">진행률</span>
+                        <span className="text-sm font-medium text-gray-700">{progress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 오류 세부사항 */}
+                  {errorDetails && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                      <h4 className="text-sm font-medium text-red-800 mb-2">오류 세부사항:</h4>
+                      <pre className="text-sm text-red-700 whitespace-pre-wrap">{errorDetails}</pre>
+                    </div>
+                  )}
+
+                  {/* 작업 ID (디버깅용) */}
+                  {taskId && (
+                    <div className="text-xs text-gray-400 mb-4">
+                      작업 ID: {taskId}
+                    </div>
+                  )}
+
+                  {/* 버튼 */}
+                  <div className="flex gap-3">
+                    {(scriptMessage.includes('완료') || errorDetails) && (
+                      <button
+                        onClick={() => {
+                          setScriptMessage('')
+                          setErrorDetails('')
+                          setProgress(0)
+                          setTaskId('')
+                        }}
+                        className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+                      >
+                        닫기
+                      </button>
+                    )}
+                    
+                    {errorDetails && (
+                      <button
+                        onClick={() => {
+                          setScriptMessage('')
+                          setErrorDetails('')
+                          setProgress(0)
+                          setTaskId('')
+                          handleRunPythonScript()
+                        }}
+                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                      >
+                        다시 시도
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}

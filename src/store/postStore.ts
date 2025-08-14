@@ -1,48 +1,51 @@
-// ===== 18. src/store/postStore.ts =====
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-export interface Post {
-  id: number
-  title: string
-  content: string
-  category: string
-  tags: string
-  publishType: string
-  status: 'writing' | 'completed' | 'published'
-  createdAt: string
-  image: string | null
-}
+import { Post } from '@/types'
 
 interface PostStore {
   posts: Post[]
-  addPost: (post: Post) => void
-  updatePost: (id: number, post: Partial<Post>) => void
+  addPost: (post: Omit<Post, 'id' | 'createdAt'>) => void
+  updatePost: (id: number, updates: Partial<Post>) => void
   deletePost: (id: number) => void
+  getPostById: (id: number) => Post | undefined
 }
 
 export const usePostStore = create<PostStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       posts: [],
-      addPost: (post) =>
+
+      addPost: (postData) => {
+        const newPost: Post = {
+          ...postData,
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+        }
         set((state) => ({
-          posts: [...state.posts, post],
-        })),
-      updatePost: (id, updatedPost) =>
+          posts: [newPost, ...state.posts]
+        }))
+      },
+
+      updatePost: (id, updates) => {
         set((state) => ({
           posts: state.posts.map((post) =>
-            post.id === id ? { ...post, ...updatedPost } : post
-          ),
-        })),
-      deletePost: (id) =>
+            post.id === id ? { ...post, ...updates } : post
+          )
+        }))
+      },
+
+      deletePost: (id) => {
         set((state) => ({
-          posts: state.posts.filter((post) => post.id !== id),
-        })),
+          posts: state.posts.filter((post) => post.id !== id)
+        }))
+      },
+
+      getPostById: (id) => {
+        return get().posts.find((post) => post.id === id)
+      },
     }),
     {
-      name: 'post-store',
-      skipHydration: true,
+      name: 'post-storage',
     }
   )
 )

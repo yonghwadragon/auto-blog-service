@@ -1,12 +1,17 @@
 // ===== 17. src/components/settings/NaverAccountSettings.tsx =====
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSettingsStore } from '@/store/settingsStore'
 import { User, Plus, Edit, Trash2, X, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function NaverAccountSettings() {
   const { naverAccounts, addNaverAccount, updateNaverAccount, deleteNaverAccount } = useSettingsStore()
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
   const [showModal, setShowModal] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -73,6 +78,7 @@ export default function NaverAccountSettings() {
       updateNaverAccount(editingAccountId, {
         alias: formData.alias,
         email: formData.naverId,
+        password: formData.password,
         blogUrl: formData.blogUrl,
         connected: true
       })
@@ -80,6 +86,7 @@ export default function NaverAccountSettings() {
       addNaverAccount({
         alias: formData.alias,
         email: formData.naverId,
+        password: formData.password,
         blogUrl: formData.blogUrl,
         connected: true
       })
@@ -117,7 +124,12 @@ export default function NaverAccountSettings() {
         </button>
       </div>
 
-      {naverAccounts.length > 0 ? (
+      {!isHydrated ? (
+        <div className="text-center py-8">
+          <div className="animate-spin w-8 h-8 border-2 border-gray-300 border-t-green-600 rounded-full mx-auto"></div>
+          <p className="text-gray-500 mt-2">데이터를 불러오는 중...</p>
+        </div>
+      ) : naverAccounts.length > 0 ? (
         <>
           <div className="space-y-3">
             {currentAccounts.map(account => (
@@ -299,13 +311,18 @@ export default function NaverAccountSettings() {
                   </label>
                   <input
                     type="password"
-                    placeholder="비밀번호"
+                    placeholder={isEditing ? "보안상 비밀번호를 다시 입력해주세요" : "비밀번호"}
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-base bg-white text-gray-900 placeholder-gray-500"
                     autoComplete="off"
                     style={{ WebkitAppearance: 'none', fontSize: '16px' }}
                   />
+                  {isEditing && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      보안상 기존 비밀번호는 표시되지 않습니다. 비밀번호를 다시 입력해주세요.
+                    </p>
+                  )}
                 </div>
 
                 <div>

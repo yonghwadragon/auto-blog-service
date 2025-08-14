@@ -6,6 +6,7 @@ interface NaverAccount {
   id: string
   alias: string
   email: string
+  password: string  // 비밀번호 추가
   blogUrl?: string
   connected: boolean
 }
@@ -23,7 +24,7 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       geminiApiKey: '',
-      naverAccounts: [{ id: '1', alias: '메인', email: '@yongyonghwa', connected: true }],
+      naverAccounts: [], // 새로운 사용자는 빈 상태로 시작
       setGeminiApiKey: (key) => set({ geminiApiKey: key }),
       addNaverAccount: (account) => set((state) => ({
         naverAccounts: [...state.naverAccounts, { ...account, id: Date.now().toString() }]
@@ -39,7 +40,6 @@ export const useSettingsStore = create<SettingsStore>()(
     }),
     {
       name: 'settings-store',
-      skipHydration: true,
     }
   )
 )

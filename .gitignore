@@ -47,5 +47,8 @@ next-env.d.ts
 # CLAUDE.md
 CLAUDE.md
 
-# AutoBlogPython폴더
+# AutoBlogPython폴더 (연습용 별도 레포지토리로 관리)
 AutoBlogPython
+
+# 클라우드 서버 (별도 레포지토리로 관리)
+naver-blog-server
